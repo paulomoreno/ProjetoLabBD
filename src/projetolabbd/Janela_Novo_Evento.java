@@ -29,22 +29,13 @@ public class Janela_Novo_Evento extends javax.swing.JFrame {
             this.janela = janela;
             
             
-            resultado = DBconnection.executeSQLSelect(conexao,"SELECT count(*) as total FROM evento");
+            resultado = Selects.selectFromEventoWithPK(conexao, codEv);
+            
             if (resultado.next()){
-                int tamanho = resultado.getInt("total");
-                int i = 0;
-                
-                resultado = DBconnection.executeSQLSelect(conexao,"SELECT codEv, nomeEv, descricaoEv, websiteEv FROM evento WHERE codEv = " + this.codEv);
-                                
-                if (resultado.next()){
                     this.txtNome.setText(resultado.getString("nomeEv"));
                     this.txtDescricao.setText(resultado.getString("descricaoEv"));
                     this.txtSite.setText(resultado.getString("websiteEv"));
-                    
-                    i++;
-                }
-                
-            }
+             }
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(null, ex.getMessage());
             Logger.getLogger(Janela_Novo_Evento.class.getName()).log(Level.SEVERE, null, ex);

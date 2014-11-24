@@ -17,9 +17,9 @@ import javax.swing.table.TableModel;
  * @author paulomoreno
  */
 public class Selects {
-    
+        
     public static void selectFromEvento(Connection conexao, String stmWhere, JTable tabelaEvento) throws SQLException{
-         ResultSet resultado;
+        ResultSet resultado;
          
         resultado = DBconnection.executeSQLSelect(conexao,"SELECT count(*) as total FROM evento " + stmWhere);
         if (resultado.next()){
@@ -49,6 +49,10 @@ public class Selects {
             tabelaEvento.setModel(new javax.swing.table.DefaultTableModel(dados,colunas));  
             tabelaEvento.removeColumn(tabelaEvento.getColumn("Codigo"));
         }
+    }
+    
+    public static ResultSet selectFromEventoWithPK(Connection conexao, String codEv) throws SQLException{
+        return DBconnection.executeSQLSelect(conexao,"SELECT codEv, nomeEv, descricaoEv, websiteEv FROM evento WHERE codEv = " + codEv);
     }
     
     
