@@ -294,5 +294,18 @@ public class Selects {
             return DBconnection.executeSQLSelect(conexao,"SELECT nomeEv, cnpjPat, razaoSocialPat, codEvPat, numEdPat, dataDesp, valorDesp, descricaoDesp, nomeEvPat FROM busca_despesa WHERE codDesp = " + codDesp + " AND codEv = " + codEv + " AND numEd = " + numEd);
     }    
 
+    public static int getRowByValue(JTable tabela, String column, Object value) {
+        int j = tabela. getColumn(column).getModelIndex();
+        TableModel model = tabela.getModel();
+        
+        for (int i = model.getRowCount() - 1; i >= 0; --i) {
+            
+           if (model.getValueAt(i, j).equals(value)) {
+                    // what if value is not unique?
+                    return i;
+            }
+        }   
+        return -1;
+    }
 
 }
