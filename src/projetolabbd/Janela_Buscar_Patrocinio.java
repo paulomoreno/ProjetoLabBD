@@ -26,35 +26,7 @@ public class Janela_Buscar_Patrocinio extends javax.swing.JFrame {
 
     
     private void Atualiza_Data_Model(String stmWhere) throws SQLException{
-        resultado = DBconnection.executeSQLSelect(conexao,"SELECT count(*) as total FROM busca_patrocinio " + stmWhere);
-        if (resultado.next()){
-            int tamanho = resultado.getInt("total");
-            int i = 0;
-
-            resultado = DBconnection.executeSQLSelect(conexao,"SELECT cnpjPat, razaoSocialPat, codEv, numEd, valorPat, saldoPat, dataPat, nomeEv FROM busca_patrocinio " + stmWhere);
-
-            String[][] dados = new String[tamanho][8];
-
-            while (resultado.next()){
-                dados[i][0] = resultado.getString("cnpjPat");
-                dados[i][1] = resultado.getString("razaoSocialPat");
-                dados[i][2] = resultado.getString("nomeEv");
-                dados[i][3] = resultado.getString("numEd");
-                dados[i][4] = resultado.getString("valorPat");
-                dados[i][5] = resultado.getString("saldoPat");
-                dados[i][6] = resultado.getString("dataPat");
-                dados[i][7] = resultado.getString("codEv");
-                i++;
-            }
-
-            String [] colunas = {
-                "CNPJ", "Razão Social","Evento","Edição","Valor", "Saldo", "Data", "codEv"
-            };
-
-            this.tabelaPatrocinio.setModel(new javax.swing.table.DefaultTableModel(dados,colunas));
-            this.tabelaPatrocinio.removeColumn(tabelaPatrocinio.getColumn("codEv"));
-
-        }
+        Selects.selectFromPatrocinio(conexao, stmWhere, tabelaPatrocinio);
     }    
     
     public Janela_Buscar_Patrocinio(Connection conexao) {

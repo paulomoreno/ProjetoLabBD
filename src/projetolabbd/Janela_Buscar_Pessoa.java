@@ -22,51 +22,7 @@ public class Janela_Buscar_Pessoa extends javax.swing.JFrame {
     ResultSet resultado;
     
     private void Atualiza_Data_Model(String stmWhere) throws SQLException{
-        resultado = DBconnection.executeSQLSelect(conexao,"SELECT count(*) as total FROM pessoa " + stmWhere);
-        if (resultado.next()){
-            int tamanho = resultado.getInt("total");
-            int i = 0;
-
-            resultado = DBconnection.executeSQLSelect(conexao,"SELECT idPe, nomePe, emailPe, instituicaoPe, telefonePe, nacionalidadePe, enderecoPe, tipoOrganizador, tipoParticipante, tipoAutor FROM pessoa " + stmWhere);
-
-
-            String[][] dados = new String[tamanho][8];
-            String virgula;
-
-
-            while (resultado.next()){
-                dados[i][0] = resultado.getString("nomePe");
-                dados[i][1] = resultado.getString("emailPe");
-                dados[i][2] = resultado.getString("instituicaoPe");
-                dados[i][3] = resultado.getString("telefonePe");
-                dados[i][4] = resultado.getString("nacionalidadePe");
-                dados[i][5] = resultado.getString("enderecoPe");
-                dados[i][6] = "";
-                virgula = "";
-                
-                if (resultado.getString("tipoOrganizador").equals("1")){
-                    dados[i][6] += "Organizador";
-                    virgula = ", ";
-                }
-                if (resultado.getString("tipoParticipante").equals("1")){
-                    dados[i][6] += virgula + "Participante";
-                    virgula = ", ";
-                }
-                if (resultado.getString("tipoAutor").equals("1")){
-                    dados[i][6] += virgula + "Autor";
-                }     
-                dados[i][7] = resultado.getString("idPe");
-                i++;
-            }
-
-            String [] colunas = {
-                "Nome", "Email","Instituição","Telefone","Nacionalidade","Endereço","Tipo","idPe"
-            };
-
-            this.tabelaPessoa.setModel(new javax.swing.table.DefaultTableModel(dados,colunas)); 
-            this.tabelaPessoa.removeColumn(tabelaPessoa.getColumn("idPe"));
-
-        }
+        Selects.selectFromPessoa(conexao, stmWhere, tabelaPessoa);
     }    
     
     public Janela_Buscar_Pessoa(String tipo, Connection conexao) {

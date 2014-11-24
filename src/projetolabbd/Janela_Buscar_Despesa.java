@@ -25,47 +25,7 @@ public class Janela_Buscar_Despesa extends javax.swing.JFrame {
    MaskFormatter mfData;
 
     private void Atualiza_Data_Model(String stmWhere) throws SQLException{
-        resultado = DBconnection.executeSQLSelect(conexao,"SELECT count(*) as total FROM busca_despesa " + stmWhere);
-        if (resultado.next()){
-            int tamanho = resultado.getInt("total");
-            int i = 0;
-
-            resultado = DBconnection.executeSQLSelect(conexao,"SELECT codDesp, codEv, nomeEv, numEd, cnpjPat, razaoSocialPat, codEvPat, numEdPat, dataDesp, valorDesp, descricaoDesp, nomeEvPat FROM busca_despesa " + stmWhere);
-
-
-            String[][] dados = new String[tamanho][12];
-            String virgula;
-
-            while (resultado.next()){
-                dados[i][0] = resultado.getString("codDesp");
-                dados[i][1] = resultado.getString("codEv");
-                
-                dados[i][2] = resultado.getString("nomeEv");
-                dados[i][3] = resultado.getString("numEd");
-                dados[i][4] = resultado.getString("cnpjPat");
-                
-                dados[i][5] = resultado.getString("razaoSocialPat");
-                dados[i][6] = resultado.getString("nomeEvPat");
-                dados[i][7] = resultado.getString("codEvPat");
-                dados[i][8] = resultado.getString("numEdPat");
-                
-                dados[i][9] = resultado.getString("dataDesp");
-                dados[i][10] = resultado.getString("valorDesp");
-                dados[i][11] = resultado.getString("descricaoDesp");
-
-                i++;
-            }
-
-            String [] colunas = {
-                "codDesp","codEv","Evento","Edição", "CNPJ", "Patrocinador", "Evento Patorcinio" ,"codEvPat" ,"Edição Patrocinio","Data","Valor","Descrição"
-            };
-
-            this.tabelaDespesa.setModel(new javax.swing.table.DefaultTableModel(dados,colunas));  
-            this.tabelaDespesa.removeColumn(tabelaDespesa.getColumn("codDesp"));
-            this.tabelaDespesa.removeColumn(tabelaDespesa.getColumn("codEvPat"));
-            this.tabelaDespesa.removeColumn(tabelaDespesa.getColumn("codEv"));
-
-        }
+        Selects.selectFromDespesa(conexao, stmWhere, tabelaDespesa);
     }    
     
     public Janela_Buscar_Despesa(Connection conexao) {

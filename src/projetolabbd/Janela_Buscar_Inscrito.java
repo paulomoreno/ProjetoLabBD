@@ -22,49 +22,7 @@ public class Janela_Buscar_Inscrito extends javax.swing.JFrame {
     ResultSet resultado;
     
     private void Atualiza_Data_Model(String stmWhere) throws SQLException{
-        resultado = DBconnection.executeSQLSelect(conexao,"SELECT count(*) as total FROM busca_inscrito " + stmWhere);
-        if (resultado.next()){
-            int tamanho = resultado.getInt("total");
-            int i = 0;
-
-            resultado = DBconnection.executeSQLSelect(conexao,"SELECT codEv, idPart, nomePe, emailPe, instituicaoPe, telefonePe, nacionalidadePe, enderecoPe, nomeEv, numEd, dataInsc, tipoApresentador \n" +
-"FROM busca_inscrito " + stmWhere);
-
-
-            String[][] dados = new String[tamanho][13];
-            String virgula;
-
-
-            while (resultado.next()){
-                dados[i][0] = resultado.getString("nomePe");
-                dados[i][1] = resultado.getString("emailPe");
-                dados[i][2] = resultado.getString("instituicaoPe");
-                dados[i][3] = resultado.getString("telefonePe");
-                dados[i][4] = resultado.getString("nacionalidadePe");
-                dados[i][5] = resultado.getString("enderecoPe");
-                
-                dados[i][6] = resultado.getString("nomeEv");
-                dados[i][7] = resultado.getString("numEd");
-                dados[i][8] = resultado.getString("dataInsc");
-                if (resultado.getString("tipoApresentador").equals("1")){
-                    dados[i][9] = "Sim";
-                } else{
-                    dados[i][9] = "Não";
-                }
-                dados[i][10] = resultado.getString("codEv");
-                dados[i][11] = resultado.getString("idPart");
-                i++;
-            }
-
-            String [] colunas = {
-                "Nome", "Email","Instituição","Telefone","Nacionalidade","Endereço", "Evento", "Edição", "Data de Inscrição", "Apresentador", "codEv", "idPart"
-            };
-
-            this.tabelaInscrito.setModel(new javax.swing.table.DefaultTableModel(dados,colunas));  
-            this.tabelaInscrito.removeColumn(tabelaInscrito.getColumn("codEv"));
-            this.tabelaInscrito.removeColumn(tabelaInscrito.getColumn("idPart"));
-
-        }
+        Selects.selectFromInscrito(conexao, stmWhere, tabelaInscrito);
     }    
     
     public Janela_Buscar_Inscrito(Connection conexao) {

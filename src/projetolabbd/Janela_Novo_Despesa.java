@@ -31,23 +31,20 @@ public class Janela_Novo_Despesa extends javax.swing.JFrame {
         this.numEd = numEd;
         this.codDesp = codDesp;
         
-        // Popula dados
-        resultado = DBconnection.executeSQLSelect(conexao,"SELECT count(*) as total FROM ");
+        try {
+            // Popula dados
+            resultado = Selects.selectFromDespesaWithPK(conexao, codEv, numEd, codDesp);
             if (resultado.next()){
-                int tamanho = resultado.getInt("total");
-                int i = 0;
-                
-                resultado = DBconnection.executeSQLSelect(conexao,"SELECT codEv, nomeEv, descricaoEv, websiteEv FROM evento WHERE codEv = " + this.codEv);
-                
-                String[][] dados = new String[tamanho][5];
-                
-                if (resultado.next()){
-                    this.txtNome.setText(resultado.getString("nomeEv"));
-                    this.txtDescricao.setText(resultado.getString("descricaoEv"));
-                    this.txtSite.setText(resultado.getString("websiteEv"));
-                    
-                    i++;
-                }
+
+                    this.txtValor.setText(resultado.getString("valorDesp"));
+                    this.txtDescricao.setText(resultado.getString("descricaoDesp"));
+                    this.txtData.setText(resultado.getString("dataDesp"));
+            }
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null, ex.getMessage());
+            Logger.getLogger(Janela_Novo_Despesa.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
     }
 
 
@@ -76,73 +73,11 @@ public class Janela_Novo_Despesa extends javax.swing.JFrame {
             }
             
             //Popula tabela de eventos
-            
-            resultado = DBconnection.executeSQLSelect(conexao,"SELECT count(*) as total FROM busca_edicao ");
-            if (resultado.next()){
-                int tamanho = resultado.getInt("total");
-                int i = 0;
+            Selects.selectFromEvento(conexao, tipo, tabelaEvento);
 
-                resultado = DBconnection.executeSQLSelect(conexao,"SELECT codEv, numEd, nomeEv, numEd, descricaoEd, dataInicioEd, dataFimEd, localEd, taxaEd, saldoFinanceiroEd, qtdArtigosApresentadosEd FROM busca_edicao ");
-
-
-                String[][] dados = new String[tamanho][10];
-
-
-                while (resultado.next()){
-                    dados[i][0] = resultado.getString("nomeEv");
-                    dados[i][1] = resultado.getString("numEd");
-                    dados[i][2] = resultado.getString("descricaoEd");
-                    dados[i][3] = resultado.getString("dataInicioEd");
-                    dados[i][4] = resultado.getString("dataFimEd");
-                    dados[i][5] = resultado.getString("localEd");
-                    dados[i][6] = resultado.getString("taxaEd");
-                    dados[i][7] = resultado.getString("saldoFinanceiroEd");
-                    dados[i][8] = resultado.getString("qtdArtigosApresentadosEd");
-                    dados[i][9] = resultado.getString("codEv");
-
-                    i++;
-                }
-
-            String [] colunas = {
-                "Nome Evento", "Número Edição","Descrição","Data início","Data Fim","Local","Taxa de Inscrição", "Saldo Financeiro","Total de Artigos Apresentados", "codEv"
-            };
-
-            this.tabelaEvento.setModel(new javax.swing.table.DefaultTableModel(dados,colunas));  
-            this.tabelaEvento.removeColumn(tabelaEvento.getColumn("codEv"));
-
-             }
-            
             //Popula Tabela de Patrocinio
             
-            resultado = DBconnection.executeSQLSelect(conexao,"SELECT count(*) as total FROM busca_patrocinio ");
-            if (resultado.next()){
-                int tamanho = resultado.getInt("total");
-                int i = 0;
-
-                resultado = DBconnection.executeSQLSelect(conexao,"SELECT cnpjPat, razaoSocialPat, codEv, numEd, valorPat, saldoPat, dataPat, nomeEv FROM busca_patrocinio ");
-
-                String[][] dados = new String[tamanho][8];
-
-                while (resultado.next()){
-                    dados[i][0] = resultado.getString("cnpjPat");
-                    dados[i][1] = resultado.getString("razaoSocialPat");
-                    dados[i][2] = resultado.getString("nomeEv");
-                    dados[i][3] = resultado.getString("numEd");
-                    dados[i][4] = resultado.getString("valorPat");
-                    dados[i][5] = resultado.getString("saldoPat");
-                    dados[i][6] = resultado.getString("dataPat");
-                    dados[i][7] = resultado.getString("codEv");
-                    i++;
-                }
-
-                String [] colunas = {
-                    "CNPJ", "Razão Social","Evento","Edição","Valor", "Saldo", "Data", "codEv"
-                };
-
-                this.tabelaPatrocinio.setModel(new javax.swing.table.DefaultTableModel(dados,colunas));
-                this.tabelaPatrocinio.removeColumn(tabelaPatrocinio.getColumn("codEv"));
-
-            }
+            Selects.selectFromPatrocinio(conexao, tipo, tabelaPatrocinio);
             
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(null, ex.getMessage());
@@ -169,11 +104,10 @@ public class Janela_Novo_Despesa extends javax.swing.JFrame {
 
         jLabel1 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
+        txtValor = new javax.swing.JTextField();
         jLabel6 = new javax.swing.JLabel();
-        jTextField5 = new javax.swing.JTextField();
+        txtDescricao = new javax.swing.JTextField();
         jLabel7 = new javax.swing.JLabel();
-        jTextField6 = new javax.swing.JTextField();
         btn_salvar = new javax.swing.JButton();
         btn_cancela = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
@@ -182,6 +116,7 @@ public class Janela_Novo_Despesa extends javax.swing.JFrame {
         jLabel10 = new javax.swing.JLabel();
         jScrollPane3 = new javax.swing.JScrollPane();
         tabelaEvento = new javax.swing.JTable();
+        txtData = new javax.swing.JFormattedTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -189,8 +124,6 @@ public class Janela_Novo_Despesa extends javax.swing.JFrame {
         jLabel1.setText("Despesa");
 
         jLabel5.setText("Valor");
-
-        jTextField1.setText("???");
 
         jLabel6.setText("Descrição");
 
@@ -263,11 +196,10 @@ public class Janela_Novo_Despesa extends javax.swing.JFrame {
                                     .addComponent(jLabel6)
                                     .addComponent(jLabel7))
                                 .addGap(40, 40, 40)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jTextField6, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                        .addComponent(jTextField1)
-                                        .addComponent(jTextField5, javax.swing.GroupLayout.PREFERRED_SIZE, 295, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(txtValor)
+                                    .addComponent(txtDescricao, javax.swing.GroupLayout.PREFERRED_SIZE, 295, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(txtData, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE))))
                         .addGap(0, 0, Short.MAX_VALUE))))
         );
         layout.setVerticalGroup(
@@ -286,24 +218,23 @@ public class Janela_Novo_Despesa extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtValor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel6)
-                    .addComponent(jTextField5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtDescricao, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel7)
-                            .addComponent(jTextField6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(15, 71, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jLabel7)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(txtData, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 36, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(btn_salvar)
-                            .addComponent(btn_cancela))
-                        .addContainerGap())))
+                            .addComponent(btn_cancela))))
+                .addContainerGap())
         );
 
         pack();
@@ -354,10 +285,10 @@ public class Janela_Novo_Despesa extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel9;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField5;
-    private javax.swing.JTextField jTextField6;
     private javax.swing.JTable tabelaEvento;
     private javax.swing.JTable tabelaPatrocinio;
+    private javax.swing.JFormattedTextField txtData;
+    private javax.swing.JTextField txtDescricao;
+    private javax.swing.JTextField txtValor;
     // End of variables declaration//GEN-END:variables
 }
