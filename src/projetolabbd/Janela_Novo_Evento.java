@@ -28,7 +28,6 @@ public class Janela_Novo_Evento extends javax.swing.JFrame {
             this.codEv = codEv;
             this.janela = janela;
             
-            
             resultado = Selects.selectFromEventoWithPK(conexao, codEv);
             
             if (resultado.next()){
@@ -42,7 +41,6 @@ public class Janela_Novo_Evento extends javax.swing.JFrame {
         }
         
     }
-
 
     public Janela_Novo_Evento(Connection conexao, String tipo) {
         initComponents();

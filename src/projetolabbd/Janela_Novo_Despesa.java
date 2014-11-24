@@ -32,6 +32,22 @@ public class Janela_Novo_Despesa extends javax.swing.JFrame {
         this.codDesp = codDesp;
         
         // Popula dados
+        resultado = DBconnection.executeSQLSelect(conexao,"SELECT count(*) as total FROM ");
+            if (resultado.next()){
+                int tamanho = resultado.getInt("total");
+                int i = 0;
+                
+                resultado = DBconnection.executeSQLSelect(conexao,"SELECT codEv, nomeEv, descricaoEv, websiteEv FROM evento WHERE codEv = " + this.codEv);
+                
+                String[][] dados = new String[tamanho][5];
+                
+                if (resultado.next()){
+                    this.txtNome.setText(resultado.getString("nomeEv"));
+                    this.txtDescricao.setText(resultado.getString("descricaoEv"));
+                    this.txtSite.setText(resultado.getString("websiteEv"));
+                    
+                    i++;
+                }
     }
 
 
