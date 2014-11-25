@@ -30,18 +30,25 @@ public class Janela_Novo_Despesa extends javax.swing.JFrame {
     ResultSet resultado;
     MaskFormatter mfData;
 
+    /*
+        Construtor que recebe a PK de despesa e a janela pai, no caso de ser uma edição
+    */
     public Janela_Novo_Despesa(Connection conexao, String tipo, String codEv, String numEd, String codDesp, Janela_Buscar_Despesa buscarDespesa) {
+        // Chama o construtor normal (com o tipo que será "update")
         this(conexao, tipo);
+        // Salva as informações de PK e janela pai
         this.codEv = codEv;
         this.numEd = numEd;
         this.codDesp = codDesp;
         this.janela = buscarDespesa;
         
         try {
-            // Popula dados
+            // Popula dados da despesa de acordo com a PK 
             resultado = Selects.selectFromDespesaWithPK(conexao, codEv, numEd, codDesp);
+            // Casa exista resultado
             if (resultado.next()){
 
+                    //Coloca nos textfields os valores respectivos
                     this.txtValor.setText(resultado.getString("valorDesp"));
                     this.txtDescricao.setText(resultado.getString("descricaoDesp"));
                     this.txtData.setText(resultado.getString("dataDesp"));
@@ -49,6 +56,7 @@ public class Janela_Novo_Despesa extends javax.swing.JFrame {
                     //Seleciona tabela
                     int index = -1;
                     
+                    //Percorre a tabela (já populada) de eventos/edições e encontra o indice cuja PK é a PK da despesa atual
                     for (int i = tabelaEvento.getModel().getRowCount() - 1; i >= 0; --i) {
                         if (tabelaEvento.getModel().getValueAt(i, 9).equals(codEv) &&
                               tabelaEvento.getModel().getValueAt(i, 1).equals(numEd)  
@@ -56,10 +64,10 @@ public class Janela_Novo_Despesa extends javax.swing.JFrame {
                             index = i;
                         }
                     }   
-                    
+                    //Seleciona o evento/edição na tabela de evento/edição
                     tabelaEvento.setRowSelectionInterval(index, index);
 
-                    
+                    //PRocura o patrocinio correspondente desta despesa
                    for (int i = tabelaPatrocinio.getModel().getRowCount() - 1; i >= 0; --i) {
                         if (tabelaPatrocinio.getModel().getValueAt(i, 0).equals(resultado.getString("cnpjPat")) &&
                               tabelaPatrocinio.getModel().getValueAt(i, 7).equals(resultado.getString("codEvPat")) &&
@@ -70,6 +78,7 @@ public class Janela_Novo_Despesa extends javax.swing.JFrame {
                         }
                     }   
                     
+                   //Seleciona este patrocinio
                     tabelaPatrocinio.setRowSelectionInterval(index, index);          
                     
             }
@@ -82,6 +91,7 @@ public class Janela_Novo_Despesa extends javax.swing.JFrame {
 
 
     public Janela_Novo_Despesa(Connection conexao, String tipo) {
+        // Inicia o código do MaskFormatter (para colocar a máscara de data)
         try {
             mfData = new MaskFormatter("##/##/####");
             mfData.setPlaceholderCharacter('_');
@@ -91,8 +101,10 @@ public class Janela_Novo_Despesa extends javax.swing.JFrame {
         }        
         try {  
             initComponents();
+            //Define que o usuário só pode selecionar uma linha das tabelas
             this.tabelaEvento.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
             this.tabelaPatrocinio.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+            //Inicia a coneão e o tipo
             this.conexao = conexao;
             this.tipo = tipo;
             if (this.conexao != null){
@@ -102,6 +114,7 @@ public class Janela_Novo_Despesa extends javax.swing.JFrame {
                 Logger.getLogger(Janela_Buscar_Despesa.class.getName()).log(Level.SEVERE, null, ex);
                 }*/
                 
+                //Deixa o botão cancelar invisivel
                 if (tipo.equals("insert")){
                     this.btn_cancela.setVisible(false);
                 } else if (tipo.equals("update")){
@@ -112,11 +125,10 @@ public class Janela_Novo_Despesa extends javax.swing.JFrame {
                 System.out.println("Falha na conexao!");
             }
             
-            //Popula tabela de eventos
+            //Popula tabela de eventos com todos eventos/edições
             Selects.selectFromEdicao(conexao, "", tabelaEvento);
 
-            //Popula Tabela de Patrocinio
-            
+            //Popula Tabela de Patrocinio com todos os patrocinios
             Selects.selectFromPatrocinio(conexao, "", tabelaPatrocinio);
             
         } catch (SQLException ex) {
@@ -286,6 +298,7 @@ public class Janela_Novo_Despesa extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btn_salvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_salvarActionPerformed
+        //Obtem o indice das tabelas de evento/edição e patrocinio
         
         int evIndex = tabelaEvento.getSelectedRow();
         int patIndex = tabelaPatrocinio.getSelectedRow();
@@ -293,26 +306,35 @@ public class Janela_Novo_Despesa extends javax.swing.JFrame {
 
         if (evIndex == -1){
             JOptionPane.showMessageDialog(null, "Preencher evento");
+        //Se tem evento/edição selecionados:
         } else {
         
+            //Obtem os campos codEv e numEd da tabela evento/edição
+            //Vale notar que 9 e 1 são os indices de coluna, definidos em SELECTS - não é o ideal
+            // mas não tive tempo de bolar um jeitpo mais prático
             codEv = (String) tabelaEvento.getModel().getValueAt(evIndex, 9);
             numEd = (String) tabelaEvento.getModel().getValueAt(evIndex, 1);
             
+            //Se patrocinios está selecionado, obtem seus dados
             if (patIndex != -1){
                 cnpjPat = (String) tabelaPatrocinio.getModel().getValueAt(patIndex, 0);
                 codEvPat = (String) tabelaPatrocinio.getModel().getValueAt(patIndex, 7);
                 numEdPat = (String) tabelaPatrocinio.getModel().getValueAt(patIndex, 3);
             }
             
+            //Verifica se a data está definida
             if (!this.txtData.getText().equals("__/__/____")){
                 data = "TO_DATE('" + this.txtData + "','DD/MM/YYYY')";
             }
             
+            //Se é insert, realiza insert
            if (this.tipo.equals("insert")){
                 try {
-
+                    // código do insert
                      resultado = DBconnection.executeSQLSelect(conexao,"INSERT INTO despesa VALUES(SEQ_CODDESP_DESPESA.NEXTVAL," + codEv + "," + numEd + "," + cnpjPat+","+ codEvPat + "," + numEdPat + ", " + data + ","+ this.txtValor.getText()+", '"+ this.txtDescricao.getText()+"')");
                      System.out.println(resultado);
+                     
+                     //Fecha a janela
                      this.setVisible(false);
                      this.dispose();
                  } catch (SQLException ex) {
@@ -320,16 +342,16 @@ public class Janela_Novo_Despesa extends javax.swing.JFrame {
                      Logger.getLogger(Janela_Buscar_Evento.class.getName()).log(Level.SEVERE, null, ex);
                  }
 
+            // Se é update, realiza um update
             }else if (this.tipo.equals("update")){
                 //SQL DE UPDATE
-                //
                 System.out.println("UPDATE DO EVENTO " + codEv);
                 try {
-                    System.out.println("UPDATE despesa SET cnpjPat = " + cnpjPat + ", codEvPat = " + codEvPat + ", numEdPat = " + numEdPat + ", dataDesp = " + data + ",valorDesp = " + this.txtValor.getText() + ", descricaoDesp = '" + this.txtDescricao.getText() + "' WHERE codDesp = " + codDesp + " AND codEv = " + codEv + " AND numEd = " + numEd
-);
-                    resultado = DBconnection.executeSQLSelect(conexao,"UPDATE despesa SET cnpjPat = " + cnpjPat + ", codEvPat = " + codEvPat + ", numEdPat = " + numEdPat + ", dataDesp = " + data + ",valorDesp = " + this.txtValor.getText() + ", descricaoDesp = '" + this.txtDescricao.getText() + "' WHERE codDesp = " + codDesp + " AND codEv = " + codEv + " AND numEd = " + numEd
-);
+                    //Código SQL do update
+                     resultado = DBconnection.executeSQLSelect(conexao,"UPDATE despesa SET cnpjPat = " + cnpjPat + ", codEvPat = " + codEvPat + ", numEdPat = " + numEdPat + ", dataDesp = " + data + ",valorDesp = " + this.txtValor.getText() + ", descricaoDesp = '" + this.txtDescricao.getText() + "' WHERE codDesp = " + codDesp + " AND codEv = " + codEv + " AND numEd = " + numEd);
                      System.out.println(resultado);
+                     
+                     //FEcha a janela
                      this.janela.atualizaTabela();
                      this.setVisible(false);
                      this.dispose();
