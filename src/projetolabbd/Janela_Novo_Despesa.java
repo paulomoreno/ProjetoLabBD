@@ -7,11 +7,13 @@ package projetolabbd;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.ParseException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
+import javax.swing.text.MaskFormatter;
 
 
 /**
@@ -26,6 +28,7 @@ public class Janela_Novo_Despesa extends javax.swing.JFrame {
     Janela_Buscar_Despesa janela;
     Connection conexao;
     ResultSet resultado;
+    MaskFormatter mfData;
 
     public Janela_Novo_Despesa(Connection conexao, String tipo, String codEv, String numEd, String codDesp, Janela_Buscar_Despesa buscarDespesa) {
         this(conexao, tipo);
@@ -80,6 +83,13 @@ public class Janela_Novo_Despesa extends javax.swing.JFrame {
 
     public Janela_Novo_Despesa(Connection conexao, String tipo) {
         try {
+            mfData = new MaskFormatter("##/##/####");
+            mfData.setPlaceholderCharacter('_');
+        } catch (ParseException ex) {
+            JOptionPane.showMessageDialog(null, ex.getMessage());
+            Logger.getLogger(Janela_Buscar_Patrocinio.class.getName()).log(Level.SEVERE, null, ex);
+        }        
+        try {  
             initComponents();
             this.tabelaEvento.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
             this.tabelaPatrocinio.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -146,7 +156,7 @@ public class Janela_Novo_Despesa extends javax.swing.JFrame {
         jLabel10 = new javax.swing.JLabel();
         jScrollPane3 = new javax.swing.JScrollPane();
         tabelaEvento = new javax.swing.JTable();
-        txtData = new javax.swing.JFormattedTextField();
+        txtData = new javax.swing.JFormattedTextField(mfData);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -276,32 +286,58 @@ public class Janela_Novo_Despesa extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btn_salvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_salvarActionPerformed
-        if (this.tipo.equals("insert")){
-            try {
-                //SQL DE INSERCAO
-                 //resultado = DBconnection.executeSQLSelect(conexao,"INSERT INTO evento VALUES(SEQ_CODEV_EVENTO.NEXTVAL,'" + this.txtNome.getText() + "', '"+ this.txtDescricao.getText()+"', '"+ this.txtSite.getText()+"', 0)");
-                 //System.out.println(resultado);
-                 this.setVisible(false);
-                 this.dispose();
-             } catch (SQLException ex) {
-                 JOptionPane.showMessageDialog(null, ex.getMessage());
-                 Logger.getLogger(Janela_Buscar_Evento.class.getName()).log(Level.SEVERE, null, ex);
-             }
-                        
-        }else if (this.tipo.equals("update")){
-            //SQL DE UPDATE
-            //
-            System.out.println("UPDATE DO EVENTO " + codEv);
-            try {
-                 //resultado = DBconnection.executeSQLSelect(conexao,"UPDATE evento SET nomeEv = '" + this.txtNome.getText() + "', descricaoEv = '" + this.txtDescricao.getText() + "' , websiteEv =  '" + this.txtSite.getText() + "' WHERE codEv = " + codEv);
-                 //System.out.println(resultado);
-                 this.janela.atualizaTabela();
-                 this.setVisible(false);
-                 this.dispose();
-             } catch (SQLException ex) {
-                 JOptionPane.showMessageDialog(null, ex.getMessage());
-                 Logger.getLogger(Janela_Buscar_Evento.class.getName()).log(Level.SEVERE, null, ex);
-             }
+        
+        int evIndex = tabelaEvento.getSelectedRow();
+        int patIndex = tabelaPatrocinio.getSelectedRow();
+        String numEd = "", codEv = "", cnpjPat="", codEvPat="", numEdPat = "", data = "NULL";
+
+        if (evIndex == -1){
+            JOptionPane.showMessageDialog(null, "Preencher evento");
+        } else {
+        
+            codEv = (String) tabelaEvento.getModel().getValueAt(evIndex, 9);
+            numEd = (String) tabelaEvento.getModel().getValueAt(evIndex, 1);
+            
+            if (patIndex != -1){
+                cnpjPat = (String) tabelaPatrocinio.getModel().getValueAt(patIndex, 0);
+                codEvPat = (String) tabelaPatrocinio.getModel().getValueAt(patIndex, 7);
+                numEdPat = (String) tabelaPatrocinio.getModel().getValueAt(patIndex, 3);
+            }
+            
+            if (!this.txtData.getText().equals("__/__/____")){
+                data = "TO_DATE('" + this.txtData + "','DD/MM/YYYY')";
+            }
+            
+           if (this.tipo.equals("insert")){
+                try {
+
+                     resultado = DBconnection.executeSQLSelect(conexao,"INSERT INTO despesa VALUES(SEQ_CODDESP_DESPESA.NEXTVAL," + codEv + "," + numEd + "," + cnpjPat+","+ codEvPat + "," + numEdPat + ", " + data + ","+ this.txtValor.getText()+", '"+ this.txtDescricao.getText()+"')");
+                     System.out.println(resultado);
+                     this.setVisible(false);
+                     this.dispose();
+                 } catch (SQLException ex) {
+                     JOptionPane.showMessageDialog(null, ex.getMessage());
+                     Logger.getLogger(Janela_Buscar_Evento.class.getName()).log(Level.SEVERE, null, ex);
+                 }
+
+            }else if (this.tipo.equals("update")){
+                //SQL DE UPDATE
+                //
+                System.out.println("UPDATE DO EVENTO " + codEv);
+                try {
+                    System.out.println("UPDATE despesa SET cnpjPat = " + cnpjPat + ", codEvPat = " + codEvPat + ", numEdPat = " + numEdPat + ", dataDesp = " + data + ",valorDesp = " + this.txtValor.getText() + ", descricaoDesp = '" + this.txtDescricao.getText() + "' WHERE codDesp = " + codDesp + " AND codEv = " + codEv + " AND numEd = " + numEd
+);
+                    resultado = DBconnection.executeSQLSelect(conexao,"UPDATE despesa SET cnpjPat = " + cnpjPat + ", codEvPat = " + codEvPat + ", numEdPat = " + numEdPat + ", dataDesp = " + data + ",valorDesp = " + this.txtValor.getText() + ", descricaoDesp = '" + this.txtDescricao.getText() + "' WHERE codDesp = " + codDesp + " AND codEv = " + codEv + " AND numEd = " + numEd
+);
+                     System.out.println(resultado);
+                     this.janela.atualizaTabela();
+                     this.setVisible(false);
+                     this.dispose();
+                 } catch (SQLException ex) {
+                     JOptionPane.showMessageDialog(null, ex.getMessage());
+                     Logger.getLogger(Janela_Buscar_Evento.class.getName()).log(Level.SEVERE, null, ex);
+                 }
+            }
         }
 
     }//GEN-LAST:event_btn_salvarActionPerformed

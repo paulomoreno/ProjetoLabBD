@@ -209,6 +209,9 @@
       </SubComponents>
     </Container>
     <Component class="javax.swing.JFormattedTextField" name="txtData">
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new javax.swing.JFormattedTextField(mfData)"/>
+      </AuxValues>
     </Component>
   </SubComponents>
 </Form>
