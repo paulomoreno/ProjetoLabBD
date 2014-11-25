@@ -22,36 +22,7 @@ public class Janela_Buscar_Artigo extends javax.swing.JFrame {
     ResultSet resultado;
     
     private void Atualiza_Data_Model(String stmWhere) throws SQLException{
-        resultado = DBconnection.executeSQLSelect(conexao,"SELECT count(*) as total FROM busca_artigo " + stmWhere);
-        if (resultado.next()){
-            int tamanho = resultado.getInt("total");
-            int i = 0;
-
-            resultado = DBconnection.executeSQLSelect(conexao,"SELECT idArt, tituloArt, dataApresArt, horaApresArt, nomeEv, numEd, nomePe FROM busca_artigo " + stmWhere);
-
-
-            String[][] dados = new String[tamanho][7];
-            String virgula;
-
-
-            while (resultado.next()){
-                dados[i][0] = resultado.getString("tituloArt");
-                dados[i][1] = resultado.getString("dataApresArt");
-                dados[i][2] = resultado.getString("horaApresArt");
-                dados[i][3] = resultado.getString("nomeEv");
-                dados[i][4] = resultado.getString("numEd");
-                dados[i][5] = resultado.getString("nomePe");
-                dados[i][6] = resultado.getString("idArt");
-                i++;
-            }
-
-            String [] colunas = {
-                "Título", "Data Apresentação","Hora Apresentação","Evento","Edição","Apresentador", "idArt"
-            };
-
-            this.tabelaArtigo.setModel(new javax.swing.table.DefaultTableModel(dados,colunas));  
-            this.tabelaArtigo.removeColumn(tabelaArtigo.getColumn("idArt"));
-        }
+        Selects.selectFromArtigo(conexao, stmWhere, tabelaArtigo);
     }    
     
     public Janela_Buscar_Artigo(Connection conexao) {

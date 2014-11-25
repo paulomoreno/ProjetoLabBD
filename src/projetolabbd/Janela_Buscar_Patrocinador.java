@@ -22,32 +22,7 @@ public class Janela_Buscar_Patrocinador extends javax.swing.JFrame {
     ResultSet resultado;
     
     private void Atualiza_Data_Model(String stmWhere) throws SQLException{
-        resultado = DBconnection.executeSQLSelect(conexao,"SELECT count(*) as total FROM patrocinador " + stmWhere);
-        if (resultado.next()){
-            int tamanho = resultado.getInt("total");
-            int i = 0;
-
-            resultado = DBconnection.executeSQLSelect(conexao,"SELECT cnpjPat, razaoSocialPat, telefonePat, enderecoPat FROM patrocinador " + stmWhere);
-
-
-            String[][] dados = new String[tamanho][4];
-            String virgula;
-
-
-            while (resultado.next()){
-                dados[i][0] = resultado.getString("cnpjPat");
-                dados[i][1] = resultado.getString("razaoSocialPat");
-                dados[i][2] = resultado.getString("telefonePat");
-                dados[i][3] = resultado.getString("enderecoPat");
-                i++;
-            }
-
-            String [] colunas = {
-                "CNPJ", "Razão Social","Telefone","Endereço"
-            };
-
-            this.tabelaPatrocinador.setModel(new javax.swing.table.DefaultTableModel(dados,colunas));  
-        }
+        Selects.selectFromPatrocinador(conexao, stmWhere, tabelaPatrocinador);
     }    
     
     public Janela_Buscar_Patrocinador(Connection conexao) {

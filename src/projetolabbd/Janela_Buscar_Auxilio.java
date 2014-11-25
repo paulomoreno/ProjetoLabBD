@@ -25,48 +25,7 @@ public class Janela_Buscar_Auxilio extends javax.swing.JFrame {
     MaskFormatter mfData;
 
     private void Atualiza_Data_Model(String stmWhere) throws SQLException{
-        resultado = DBconnection.executeSQLSelect(conexao,"SELECT count(*) as total FROM busca_auxilio " + stmWhere);
-        if (resultado.next()){
-            int tamanho = resultado.getInt("total");
-            int i = 0;
-
-            resultado = DBconnection.executeSQLSelect(conexao,"SELECT cnpjPat, razaoSocialPat, codEvPat, numEdPat, codEvApr, numEdApr, idApr, valorAux, dataAux, tipoAux, nomeEvApr, nomeEvPat, nomePe FROM busca_auxilio " + stmWhere);
-
-
-            String[][] dados = new String[tamanho][13];
-            String virgula;
-
-
-            while (resultado.next()){
-                dados[i][0] = resultado.getString("cnpjPat");
-                dados[i][1] = resultado.getString("razaoSocialPat");
-                
-                dados[i][2] = resultado.getString("nomeEvPat");
-                dados[i][3] = resultado.getString("codEvPat");
-                dados[i][4] = resultado.getString("numEdPat");
-                
-                dados[i][5] = resultado.getString("nomeEvApr");
-                dados[i][6] = resultado.getString("codEvApr");
-                dados[i][7] = resultado.getString("numEdApr");
-                
-                dados[i][8] = resultado.getString("idApr");
-                dados[i][9] = resultado.getString("nomePe");
-                dados[i][10] = resultado.getString("valorAux");
-                dados[i][11] = resultado.getString("dataAux");
-                dados[i][12] = resultado.getString("tipoAux");
-                i++;
-            }
-
-            String [] colunas = {
-                "CNPJ","Razão Social","Evento Patrocinio","codEvPat","Edição Patrocinio","Evento Apresentador","codEvApr","Edição Patrocinio","idApr","Apresentador","Valor","Data","Tipo"
-            };
-
-            this.tabelaAuxilio.setModel(new javax.swing.table.DefaultTableModel(dados,colunas));  
-            this.tabelaAuxilio.removeColumn(tabelaAuxilio.getColumn("codEvPat"));
-            this.tabelaAuxilio.removeColumn(tabelaAuxilio.getColumn("codEvApr"));
-            this.tabelaAuxilio.removeColumn(tabelaAuxilio.getColumn("idApr"));
-
-        }
+        Selects.selectFromAuxilio(conexao, stmWhere, tabelaAuxilio);
     }    
     
     public Janela_Buscar_Auxilio(Connection conexao) {
