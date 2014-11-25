@@ -37,12 +37,20 @@ public class Selects {
                 dados[i][3] = resultado.getString("totalArtigosApresentadosEv");
                 dados[i][4] = resultado.getString("codEv");
 
+                                System.out.println(dados[i][0]);
                 i++;
+                System.out.println("i:"+i);
+
             }
+            
+            System.out.println(dados);
 
             String [] colunas = {
                 "Nome", "Descrição","Site","Total de Artigos Apresentados", "Codigo"
             };
+            
+            System.out.println("lalalalala");
+            System.out.println(tabelaEvento.hashCode());
 
             tabelaEvento.setModel(new javax.swing.table.DefaultTableModel(dados,colunas));  
             tabelaEvento.removeColumn(tabelaEvento.getColumn("Codigo"));

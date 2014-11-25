@@ -299,7 +299,6 @@ public class Janela_Novo_Despesa extends javax.swing.JFrame {
 
     private void btn_salvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_salvarActionPerformed
         //Obtem o indice das tabelas de evento/edição e patrocinio
-        
         int evIndex = tabelaEvento.getSelectedRow();
         int patIndex = tabelaPatrocinio.getSelectedRow();
         String numEd = "", codEv = "", cnpjPat="", codEvPat="", numEdPat = "", data = "NULL";
