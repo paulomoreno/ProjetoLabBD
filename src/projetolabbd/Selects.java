@@ -201,6 +201,62 @@ public class Selects {
 "FROM busca_inscrito WHERE codEv = " + codEv + " AND numEd = " + numEd + " AND idPart = " + idPart);    
     }    
 
+    
+    
+ public static void selectFromOrganiza(Connection conexao, String stmWhere, JTable tabelaOrganiza) throws SQLException{
+        ResultSet resultado;
+         
+        resultado = DBconnection.executeSQLSelect(conexao,"SELECT count(*) as total FROM busca_organiza " + stmWhere);
+        if (resultado.next()){
+            int tamanho = resultado.getInt("total");
+            int i = 0;
+
+            resultado = DBconnection.executeSQLSelect(conexao,"SELECT codEv, idOrg, nomePe, emailPe, instituicaoPe, telefonePe, nacionalidadePe, enderecoPe, nomeEv, numEd, cargoOrg \n" +
+"FROM busca_organiza " + stmWhere);
+
+
+            String[][] dados = new String[tamanho][12];
+            String virgula;
+
+
+            while (resultado.next()){
+                dados[i][0] = resultado.getString("nomePe");
+                dados[i][1] = resultado.getString("emailPe");
+                dados[i][2] = resultado.getString("instituicaoPe");
+                dados[i][3] = resultado.getString("telefonePe");
+                dados[i][4] = resultado.getString("nacionalidadePe");
+                dados[i][5] = resultado.getString("enderecoPe");
+                
+                dados[i][6] = resultado.getString("nomeEv");
+                dados[i][7] = resultado.getString("numEd");
+                dados[i][8] = resultado.getString("cargoOrg");
+                
+                dados[i][9] = resultado.getString("codEv");
+                dados[i][10] = resultado.getString("idOrg");
+                i++;
+            }
+
+            String [] colunas = {
+                "Nome", "Email","Instituição","Telefone","Nacionalidade","Endereço", "Evento", "Edição", "Data de Inscrição", "Apresentador", "codEv", "idPart"
+            };
+
+            tabelaOrganiza.setModel(new javax.swing.table.DefaultTableModel(dados,colunas));  
+            tabelaOrganiza.removeColumn(tabelaOrganiza.getColumn("codEv"));
+            tabelaOrganiza.removeColumn(tabelaOrganiza.getColumn("idOrg"));
+
+        }
+    }
+    
+    public static ResultSet selectFromOrganizaWithPK(Connection conexao, String codEv, String numEd, String idOrg) throws SQLException{
+            return DBconnection.executeSQLSelect(conexao,"SELECT nomePe, emailPe, instituicaoPe, telefonePe, nacionalidadePe, enderecoPe, nomeEv, cargoOrg \n" +
+"FROM busca_inscrito WHERE codEv = " + codEv + " AND numEd = " + numEd + " AND idOrg = " + idOrg);    
+    }    
+    
+    
+    
+    
+    
+    
     public static void selectFromArtigo(Connection conexao, String stmWhere, JTable tabelaArtigo) throws SQLException{
         ResultSet resultado;
          
