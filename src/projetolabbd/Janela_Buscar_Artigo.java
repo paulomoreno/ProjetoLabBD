@@ -57,6 +57,7 @@ public class Janela_Buscar_Artigo extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        btn_editar1 = new javax.swing.JButton();
         txtTitulo = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
@@ -65,6 +66,14 @@ public class Janela_Buscar_Artigo extends javax.swing.JFrame {
         btn_filtrar = new javax.swing.JButton();
         btn_Remover = new javax.swing.JButton();
         btn_editar = new javax.swing.JButton();
+        btn_autores = new javax.swing.JButton();
+
+        btn_editar1.setText("Editar Selecionado");
+        btn_editar1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_editar1ActionPerformed(evt);
+            }
+        });
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -113,6 +122,13 @@ public class Janela_Buscar_Artigo extends javax.swing.JFrame {
             }
         });
 
+        btn_autores.setText("Editar Autores");
+        btn_autores.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_autoresActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -134,6 +150,8 @@ public class Janela_Buscar_Artigo extends javax.swing.JFrame {
                         .addGap(0, 366, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(btn_autores)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btn_editar)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btn_Remover)))
@@ -155,7 +173,8 @@ public class Janela_Buscar_Artigo extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btn_Remover)
-                    .addComponent(btn_editar)))
+                    .addComponent(btn_editar)
+                    .addComponent(btn_autores)))
         );
 
         pack();
@@ -219,6 +238,14 @@ public class Janela_Buscar_Artigo extends javax.swing.JFrame {
             updateArtigo.setVisible(true);
         }    }//GEN-LAST:event_btn_editarActionPerformed
 
+    private void btn_editar1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_editar1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btn_editar1ActionPerformed
+
+    private void btn_autoresActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_autoresActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btn_autoresActionPerformed
+
     public void atualizaTabela(){
         this.btn_filtrar.doClick();
     }
@@ -260,7 +287,9 @@ public class Janela_Buscar_Artigo extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btn_Remover;
+    private javax.swing.JButton btn_autores;
     private javax.swing.JButton btn_editar;
+    private javax.swing.JButton btn_editar1;
     private javax.swing.JButton btn_filtrar;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;

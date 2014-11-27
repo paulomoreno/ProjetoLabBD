@@ -237,7 +237,7 @@ public class Selects {
             }
 
             String [] colunas = {
-                "Nome", "Email","Instituição","Telefone","Nacionalidade","Endereço", "Evento", "Edição", "Data de Inscrição", "Apresentador", "codEv", "idPart"
+                "Nome", "Email","Instituição","Telefone","Nacionalidade","Endereço", "Evento", "Edição", "Cargo", "codEv", "idOrg"
             };
 
             tabelaOrganiza.setModel(new javax.swing.table.DefaultTableModel(dados,colunas));  
@@ -295,6 +295,38 @@ public class Selects {
     public static ResultSet selectFromArtigoWithPK(Connection conexao, String idArt) throws SQLException{
             return DBconnection.executeSQLSelect(conexao,"SELECT idArt, tituloArt, dataApresArt, horaApresArt, nomeEv, numEd, nomePe, codEv, idApr FROM busca_artigo WHERE idArt = " + idArt);
     }    
+    
+    
+        public static void selectFromEscreve(Connection conexao, String stmWhere, JTable tabelaEvento) throws SQLException{
+        ResultSet resultado;
+         
+        resultado = DBconnection.executeSQLSelect(conexao,"SELECT count(*) as total FROM busca_escreve " + stmWhere);
+        if (resultado.next()){
+            int tamanho = resultado.getInt("total");
+            int i = 0;
+
+            resultado = DBconnection.executeSQLSelect(conexao,"SELECT idArt, tituloArt, nomePe, idAut FROM busca_escreve " + stmWhere);
+
+            String[][] dados = new String[tamanho][4];
+
+            while (resultado.next()){
+                dados[i][0] = resultado.getString("tituloArt");
+                dados[i][1] = resultado.getString("nomePe");
+                dados[i][2] = resultado.getString("idArt");
+                dados[i][3] = resultado.getString("idAut");
+                i++;
+            }
+            
+            String [] colunas = {
+                "Título", "Autor","idArt","idAut"
+            };
+
+            tabelaEvento.setModel(new javax.swing.table.DefaultTableModel(dados,colunas));  
+            tabelaEvento.removeColumn(tabelaEvento.getColumn("Título"));
+            tabelaEvento.removeColumn(tabelaEvento.getColumn("idArt"));
+            tabelaEvento.removeColumn(tabelaEvento.getColumn("idAut"));
+        }
+    }
 
     public static void selectFromPatrocinador(Connection conexao, String stmWhere, JTable tabelaPatrocinador) throws SQLException{
         ResultSet resultado;

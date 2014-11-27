@@ -7,7 +7,9 @@ package projetolabbd;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.DateFormat;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
@@ -51,7 +53,13 @@ public class Janela_Novo_Despesa extends javax.swing.JFrame {
                     //Coloca nos textfields os valores respectivos
                     this.txtValor.setText(resultado.getString("valorDesp"));
                     this.txtDescricao.setText(resultado.getString("descricaoDesp"));
-                    this.txtData.setText(resultado.getString("dataDesp"));
+                    //this.txtData.setText(resultado.getString("dataDesp"));
+                    
+                    DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+                    
+                    if (resultado.getDate("dataDesp")!=null){
+                        this.txtData.setText(df.format(resultado.getDate("dataDesp")));
+                    }
                     
                     //Seleciona tabela
                     int index = -1;

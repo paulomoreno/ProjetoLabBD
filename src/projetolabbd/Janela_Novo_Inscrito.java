@@ -44,11 +44,11 @@ public class Janela_Novo_Inscrito extends javax.swing.JFrame {
             if (resultado.next()){
 
                     //Coloca nos textfields os valores respectivos
-                    //this.txtData.setText(resultado.getString("dataInsc"));                    
-                    //System.out.println("DATA: " + resultado.getDate("dataInsc"));
                     DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
-                    //System.out.println(df.format(resultado.getDate("dataInsc")));
-                    this.txtData.setText(df.format(resultado.getDate("dataInsc")));
+                    
+                    if (resultado.getDate("dataInsc")!=null){
+                        this.txtData.setText(df.format(resultado.getDate("dataInsc")));
+                    }
                     
                     //Seleciona tabela
                     int index = -1;

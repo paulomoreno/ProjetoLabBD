@@ -7,7 +7,9 @@ package projetolabbd;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.DateFormat;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
@@ -39,9 +41,15 @@ public class Janela_Novo_Edicao extends javax.swing.JFrame {
             // Casa exista resultado
             if (resultado.next()){
 
+                    DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+                    
+                    if (resultado.getDate("dataInicioEd")!=null){
+                        this.txtDataInicio.setText(df.format(resultado.getDate("dataInicioEd")));
+                    }
+                    if (resultado.getDate("dataFimEd")!=null){
+                        this.txtDataTermino.setText(df.format(resultado.getDate("dataFimEd")));
+                    }
                     //Coloca nos textfields os valores respectivos
-                    this.txtDataInicio.setText(resultado.getString("dataInicioEd"));
-                    this.txtDataTermino.setText(resultado.getString("dataFimEd"));
                     this.txtDescricao.setText(resultado.getString("descricaoEd"));
                     this.txtLocal.setText(resultado.getString("localEd"));
                     this.txtTaxa.setText(resultado.getString("taxaEd"));

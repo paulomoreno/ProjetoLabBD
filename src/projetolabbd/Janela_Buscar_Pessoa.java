@@ -18,15 +18,21 @@ import javax.swing.JOptionPane;
  * @author paulomoreno
  */
 public class Janela_Buscar_Pessoa extends javax.swing.JFrame {
+    String tipo;
     Connection conexao;
     ResultSet resultado;
     
     private void Atualiza_Data_Model(String stmWhere) throws SQLException{
-        Selects.selectFromPessoa(conexao, stmWhere, tabelaPessoa);
+        if(this.tipo.equals("organizador")){
+            Selects.selectFromOrganiza(conexao, stmWhere, tabelaPessoa);
+        }else{
+            Selects.selectFromPessoa(conexao, stmWhere, tabelaPessoa);
+        }
     }    
     
     public Janela_Buscar_Pessoa(String tipo, Connection conexao) {
         initComponents();
+        this.tipo = tipo;
 
         String where = "";
         
@@ -316,37 +322,78 @@ public class Janela_Buscar_Pessoa extends javax.swing.JFrame {
     }//GEN-LAST:event_chk_participanteActionPerformed
 
     private void btn_removerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_removerActionPerformed
-       int index = tabelaPessoa.getSelectedRow();
-        if (index != -1){
-            String idPe = (String) tabelaPessoa.getModel().getValueAt(index, 7);
-            String nome = (String) tabelaPessoa.getModel().getValueAt(index, 0);
-            String email = (String) tabelaPessoa.getModel().getValueAt(index, 1);
+    
+        if(this.tipo.equals("organizador")){
+            int index = tabelaPessoa.getSelectedRow();
+            if (index != -1){
+                String nome = (String) tabelaPessoa.getModel().getValueAt(index, 0);
+                String email = (String) tabelaPessoa.getModel().getValueAt(index, 1);
+                String codEv = (String) tabelaPessoa.getModel().getValueAt(index, 9);
+                String numEd = (String) tabelaPessoa.getModel().getValueAt(index, 7);
+                String idOrg = (String) tabelaPessoa.getModel().getValueAt(index, 10);
+                
+                int dialogResult = JOptionPane.showConfirmDialog (null, "Você tem certeza que deseja excluir " + nome + " com email " +  email + "?","Aviso",JOptionPane.YES_NO_OPTION);
+                if(dialogResult == JOptionPane.YES_OPTION){
 
-            int dialogResult = JOptionPane.showConfirmDialog (null, "Você tem certeza que deseja excluir " + nome + " com email " +  email + "?","Aviso",JOptionPane.YES_NO_OPTION);
-            if(dialogResult == JOptionPane.YES_OPTION){
+                    try {
+                        resultado = DBconnection.executeSQLSelect(conexao,"CALL remove.removeOrganiza("+codEv+", "+numEd+", "+idOrg+")");
+                        System.out.println(resultado);
+                        this.btn_filtrar.doClick();
+                    } catch (SQLException ex) {
+                        JOptionPane.showMessageDialog(null, ex.getMessage());
+                        Logger.getLogger(Janela_Buscar_Evento.class.getName()).log(Level.SEVERE, null, ex);
+                    }
 
-                System.out.println("REMOÇÃO DA PESSAO " + idPe);
-                try {
-                    resultado = DBconnection.executeSQLSelect(conexao,"DELETE FROM pessoa WHERE idPe = " + idPe );
-                    System.out.println(resultado);
-                    this.btn_filtrar.doClick();
-                } catch (SQLException ex) {
-                    JOptionPane.showMessageDialog(null, ex.getMessage());
-                    Logger.getLogger(Janela_Buscar_Evento.class.getName()).log(Level.SEVERE, null, ex);
+
                 }
 
-            
             }
-            
+        }else{
+            int index = tabelaPessoa.getSelectedRow();
+            if (index != -1){
+                String idPe = (String) tabelaPessoa.getModel().getValueAt(index, 7);
+                String nome = (String) tabelaPessoa.getModel().getValueAt(index, 0);
+                String email = (String) tabelaPessoa.getModel().getValueAt(index, 1);
+
+                int dialogResult = JOptionPane.showConfirmDialog (null, "Você tem certeza que deseja excluir " + nome + " com email " +  email + "?","Aviso",JOptionPane.YES_NO_OPTION);
+                if(dialogResult == JOptionPane.YES_OPTION){
+
+                    System.out.println("REMOÇÃO DA PESSAO " + idPe);
+                    try {
+                        resultado = DBconnection.executeSQLSelect(conexao,"DELETE FROM pessoa WHERE idPe = " + idPe );
+                        System.out.println(resultado);
+                        this.btn_filtrar.doClick();
+                    } catch (SQLException ex) {
+                        JOptionPane.showMessageDialog(null, ex.getMessage());
+                        Logger.getLogger(Janela_Buscar_Evento.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+
+
+                }
+
+            }
         }
     }//GEN-LAST:event_btn_removerActionPerformed
 
     private void btn_editarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_editarActionPerformed
-        int index = tabelaPessoa.getSelectedRow();
-        if (index != -1){     
-            String idPe = (String) tabelaPessoa.getModel().getValueAt(index, 7);
-            Janela_Novo_Pessoa updatePessoa = new Janela_Novo_Pessoa(conexao, "update", idPe, this);
-            updatePessoa.setVisible(true);
+        if(this.tipo.equals("organizador")){
+            int index = tabelaPessoa.getSelectedRow();                
+            if (index != -1){     
+
+                String codEv = (String) tabelaPessoa.getModel().getValueAt(index, 9);
+                String numEd = (String) tabelaPessoa.getModel().getValueAt(index, 7);
+                String idOrg = (String) tabelaPessoa.getModel().getValueAt(index, 10);
+                
+                //Janela_Novo_Organiza updateOrganizador = new Janela_Novo_Organiza(conexao, "update", codEv, numEd, idOrg,this);
+                //updateOrganizador.setVisible(true);
+            }
+        }else{
+            int index = tabelaPessoa.getSelectedRow();
+            if (index != -1){     
+                String idPe = (String) tabelaPessoa.getModel().getValueAt(index, 7);
+                Janela_Novo_Pessoa updatePessoa = new Janela_Novo_Pessoa(conexao, "update", idPe, this);
+                updatePessoa.setVisible(true);
+            }
         }
     }//GEN-LAST:event_btn_editarActionPerformed
 

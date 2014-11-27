@@ -7,7 +7,9 @@ package projetolabbd;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.DateFormat;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
@@ -53,7 +55,13 @@ public class Janela_Novo_Auxilio extends javax.swing.JFrame {
                     //Coloca nos textfields os valores respectivos
                     this.txtValor.setText(resultado.getString("valorAux"));
                     this.cmb_tipo.setSelectedItem(resultado.getString("tipoAux"));
-                    this.txtData.setText(resultado.getString("dataAux"));
+                    
+                    //this.txtData.setText(resultado.getString("dataAux"));
+                    DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+                    
+                    if (resultado.getDate("dataAux")!=null){
+                        this.txtData.setText(df.format(resultado.getDate("dataAux")));
+                    }
                     
                     //Seleciona tabela
                     int index = -1;
