@@ -183,7 +183,6 @@ public class Janela_Novo_Evento extends javax.swing.JFrame {
     private void btn_salvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_salvarActionPerformed
         if (this.tipo.equals("insert")){
             try {
-        
                  resultado = DBconnection.executeSQLSelect(conexao,"INSERT INTO evento VALUES(SEQ_CODEV_EVENTO.NEXTVAL,'" + this.txtNome.getText() + "', '"+ this.txtDescricao.getText()+"', '"+ this.txtSite.getText()+"', 0)");
                  System.out.println(resultado);
                  this.setVisible(false);

@@ -78,6 +78,7 @@ public class Janela_Buscar_Auxilio extends javax.swing.JFrame {
         cmbEvento = new javax.swing.JComboBox();
         btn_remover = new javax.swing.JButton();
         txtData = new javax.swing.JFormattedTextField(mfData);
+        btn_editar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -136,6 +137,13 @@ public class Janela_Buscar_Auxilio extends javax.swing.JFrame {
             }
         });
 
+        btn_editar.setText("Editar Selecionado");
+        btn_editar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_editarActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -164,11 +172,14 @@ public class Janela_Buscar_Auxilio extends javax.swing.JFrame {
                                         .addGap(17, 17, 17)
                                         .addComponent(txtValor, javax.swing.GroupLayout.PREFERRED_SIZE, 209, javax.swing.GroupLayout.PREFERRED_SIZE)))
                                 .addGap(0, 0, Short.MAX_VALUE))
-                            .addComponent(jScrollPane1)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(0, 0, Short.MAX_VALUE)
-                                .addComponent(btn_remover, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(jScrollPane1))
                         .addContainerGap())))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(btn_editar, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btn_remover, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -191,9 +202,11 @@ public class Janela_Buscar_Auxilio extends javax.swing.JFrame {
                 .addComponent(btn_filtrar)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 281, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btn_remover)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btn_remover)
+                    .addComponent(btn_editar))
+                .addContainerGap())
         );
 
         pack();
@@ -254,7 +267,8 @@ public class Janela_Buscar_Auxilio extends javax.swing.JFrame {
 
                 System.out.println("REMOÇÃO DO AUXILIO " + tipoAux + " - " + idApr);
                 try {
-                    resultado = DBconnection.executeSQLSelect(conexao,"DELETE FROM auxilio WHERE codEvApr = " + codEvApr + " AND numEdApr = "  + numEdApr + " AND idApr = " + idApr );
+                    //resultado = DBconnection.executeSQLSelect(conexao,"DELETE FROM auxilio WHERE codEvApr = " + codEvApr + " AND numEdApr = "  + numEdApr + " AND idApr = " + idApr );
+                    resultado = DBconnection.executeSQLSelect(conexao,"CALL remove.removeAuxilio(" + codEvApr + ", "  + numEdApr + ", " + idApr + ", " + tipoAux + ")");
                     System.out.println(resultado);
                     this.btn_filtrar.doClick();
                 } catch (SQLException ex) {
@@ -273,6 +287,22 @@ public class Janela_Buscar_Auxilio extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_txtDataActionPerformed
 
+    private void btn_editarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_editarActionPerformed
+        int index = tabelaAuxilio.getSelectedRow();
+        if (index != -1){
+            String codEvApr = (String) tabelaAuxilio.getModel().getValueAt(index, 6);
+            String numEdApr = (String) tabelaAuxilio.getModel().getValueAt(index, 7);
+            String idApr = (String) tabelaAuxilio.getModel().getValueAt(index, 8);
+            String tipoAux = (String) tabelaAuxilio.getModel().getValueAt(index, 12);
+            Janela_Novo_Auxilio updateAuxilio = new Janela_Novo_Auxilio(conexao, "update", codEvApr, numEdApr, idApr, tipoAux, this);
+            updateAuxilio.setVisible(true);
+        }
+    }//GEN-LAST:event_btn_editarActionPerformed
+
+    public void atualizaTabela(){
+        this.btn_filtrar.doClick();
+    }
+    
     /**
      * @param args the command line arguments
      */
@@ -309,6 +339,7 @@ public class Janela_Buscar_Auxilio extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btn_editar;
     private javax.swing.JButton btn_filtrar;
     private javax.swing.JButton btn_remover;
     private javax.swing.JComboBox cmbEvento;

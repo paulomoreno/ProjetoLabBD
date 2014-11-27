@@ -265,7 +265,8 @@ public class Janela_Buscar_Edicao extends javax.swing.JFrame {
 
                 System.out.println("REMOÇÃO DA EDIÇÃO " + codEv + " - " + numEd);
                 try {
-                    resultado = DBconnection.executeSQLSelect(conexao,"DELETE FROM edicao WHERE codEv = " + codEv + " AND numEd = " + numEd );
+                    //resultado = DBconnection.executeSQLSelect(conexao,"DELETE FROM edicao WHERE codEv = " + codEv + " AND numEd = " + numEd );
+                    resultado = DBconnection.executeSQLSelect(conexao,"CALL remove.removeEdicao("+codEv+", "+numEd+")");
                     System.out.println(resultado);
                     this.btn_filtrar.doClick();
                 } catch (SQLException ex) {

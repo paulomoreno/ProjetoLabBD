@@ -20,12 +20,13 @@ import javax.swing.text.MaskFormatter;
  *
  * @author andrehena
  */
-public class Janela_Novo_Patrocinio extends javax.swing.JFrame {
+public class Janela_Novo_Auxilio extends javax.swing.JFrame {
     String tipo;
-    String codEv;
-    String numEd;
-    String cnpjPat;
-    Janela_Buscar_Patrocinio janela;
+    String codEvApr;
+    String numEdApr;
+    String idApr;
+    String tipoAux;
+    Janela_Buscar_Auxilio janela;
     Connection conexao;
     ResultSet resultado;
     MaskFormatter mfData;
@@ -33,60 +34,66 @@ public class Janela_Novo_Patrocinio extends javax.swing.JFrame {
     /*
         Construtor que recebe a PK de despesa e a janela pai, no caso de ser uma edição
     */
-    public Janela_Novo_Patrocinio(Connection conexao, String tipo, String codEv, String numEd, String cnpjPat, Janela_Buscar_Patrocinio janela) {
+    public Janela_Novo_Auxilio(Connection conexao, String tipo, String codEvApr, String numEdApr, String idApr, String tipoAux, Janela_Buscar_Auxilio buscarAuxilio) {
         // Chama o construtor normal (com o tipo que será "update")
         this(conexao, tipo);
         // Salva as informações de PK e janela pai
-        this.codEv = codEv;
-        this.numEd = numEd;
-        this.cnpjPat = cnpjPat;
-        this.janela = janela;
+        this.codEvApr = codEvApr;
+        this.numEdApr = numEdApr;
+        this.idApr = idApr;
+        this.tipoAux = tipoAux;
+        this.janela = buscarAuxilio;
         
         try {
             // Popula dados da despesa de acordo com a PK 
-            resultado = Selects.selectFromPatrocinioWithPK(conexao, codEv, numEd, cnpjPat);
+            resultado = Selects.selectFromAuxilioWithPK(conexao, codEvApr, numEdApr, idApr, tipoAux); 
             // Casa exista resultado
             if (resultado.next()){
 
                     //Coloca nos textfields os valores respectivos
-                    this.txtValor.setText(resultado.getString("valorPat"));
-                    this.txtData.setText(resultado.getString("dataPat"));
+                    this.txtValor.setText(resultado.getString("valorAux"));
+                    this.cmb_tipo.setSelectedItem(resultado.getString("tipoAux"));
+                    this.txtData.setText(resultado.getString("dataAux"));
                     
                     //Seleciona tabela
                     int index = -1;
                     
                     //Percorre a tabela (já populada) de eventos/edições e encontra o indice cuja PK é a PK da despesa atual
-                    for (int i = tabelaEvento.getModel().getRowCount() - 1; i >= 0; --i) {
-                        if (tabelaEvento.getModel().getValueAt(i, 9).equals(codEv) &&
-                              tabelaEvento.getModel().getValueAt(i, 1).equals(numEd)  
+                    for (int i = tabelaInscrito.getModel().getRowCount() - 1; i >= 0; --i) {
+                        if (tabelaInscrito.getModel().getValueAt(i, 10).equals(codEvApr) &&
+                              tabelaInscrito.getModel().getValueAt(i, 7).equals(numEdApr)  &&
+                              tabelaInscrito.getModel().getValueAt(i, 11).equals(idApr)  
                                 ) {
                             index = i;
                         }
                     }   
                     //Seleciona o evento/edição na tabela de evento/edição
-                    tabelaEvento.setRowSelectionInterval(index, index);
+                    tabelaInscrito.setRowSelectionInterval(index, index);
 
                     //PRocura o patrocinio correspondente desta despesa
-                   for (int i = tabelaPatrocinador.getModel().getRowCount() - 1; i >= 0; --i) {
-                        if (tabelaPatrocinador.getModel().getValueAt(i, 0).equals(resultado.getString("cnpjPat"))
+                   for (int i = tabelaPatrocinio.getModel().getRowCount() - 1; i >= 0; --i) {
+                        if (tabelaPatrocinio.getModel().getValueAt(i, 0).equals(resultado.getString("cnpjPat")) &&
+                              tabelaPatrocinio.getModel().getValueAt(i, 7).equals(resultado.getString("codEvPat")) &&
+                              tabelaPatrocinio.getModel().getValueAt(i, 3).equals(resultado.getString("numEdPat")) 
+                                
                                 ) {
                             index = i;
                         }
                     }   
                     
                    //Seleciona este patrocinio
-                    tabelaPatrocinador.setRowSelectionInterval(index, index);          
+                    tabelaPatrocinio.setRowSelectionInterval(index, index);          
                     
             }
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(null, ex.getMessage());
-            Logger.getLogger(Janela_Novo_Patrocinio.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Janela_Novo_Auxilio.class.getName()).log(Level.SEVERE, null, ex);
         }
         
     }
 
 
-    public Janela_Novo_Patrocinio(Connection conexao, String tipo) {
+    public Janela_Novo_Auxilio(Connection conexao, String tipo) {
         // Inicia o código do MaskFormatter (para colocar a máscara de data)
         try {
             mfData = new MaskFormatter("##/##/####");
@@ -98,8 +105,8 @@ public class Janela_Novo_Patrocinio extends javax.swing.JFrame {
         try {  
             initComponents();
             //Define que o usuário só pode selecionar uma linha das tabelas
-            this.tabelaEvento.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-            this.tabelaPatrocinador.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+            this.tabelaPatrocinio.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+            this.tabelaInscrito.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
             //Inicia a coneão e o tipo
             this.conexao = conexao;
             this.tipo = tipo;
@@ -121,15 +128,15 @@ public class Janela_Novo_Patrocinio extends javax.swing.JFrame {
                 System.out.println("Falha na conexao!");
             }
             
-            //Popula tabela de eventos com todos eventos/edições
-            Selects.selectFromEdicao(conexao, "", tabelaEvento);
-
             //Popula Tabela de Patrocinio com todos os patrocinios
-            Selects.selectFromPatrocinador(conexao, "", tabelaPatrocinador);
+            Selects.selectFromPatrocinio(conexao, "", tabelaPatrocinio);
+            
+            //Popula Tabela de Inscrito com todos os inscritos
+            Selects.selectFromInscrito(conexao, "", tabelaInscrito);
             
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(null, ex.getMessage());
-            Logger.getLogger(Janela_Novo_Patrocinio.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Janela_Novo_Auxilio.class.getName()).log(Level.SEVERE, null, ex);
         }
         
     }
@@ -137,7 +144,7 @@ public class Janela_Novo_Patrocinio extends javax.swing.JFrame {
     /**
      * Creates new form Janela_Novo_Evento
      */
-    public Janela_Novo_Patrocinio() {
+    public Janela_Novo_Auxilio() {
         initComponents();
     }
 
@@ -153,23 +160,27 @@ public class Janela_Novo_Patrocinio extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         txtValor = new javax.swing.JTextField();
+        jLabel6 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
         btn_salvar = new javax.swing.JButton();
         btn_cancela = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
-        tabelaPatrocinador = new javax.swing.JTable();
+        tabelaInscrito = new javax.swing.JTable();
         jLabel9 = new javax.swing.JLabel();
         jLabel10 = new javax.swing.JLabel();
         jScrollPane3 = new javax.swing.JScrollPane();
-        tabelaEvento = new javax.swing.JTable();
+        tabelaPatrocinio = new javax.swing.JTable();
         txtData = new javax.swing.JFormattedTextField(mfData);
+        cmb_tipo = new javax.swing.JComboBox();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         jLabel1.setFont(new java.awt.Font("Tahoma", 0, 36)); // NOI18N
-        jLabel1.setText("Patrocínio");
+        jLabel1.setText("Despesa");
 
         jLabel5.setText("Valor");
+
+        jLabel6.setText("Tipo");
 
         jLabel7.setText("Data");
 
@@ -182,7 +193,7 @@ public class Janela_Novo_Patrocinio extends javax.swing.JFrame {
 
         btn_cancela.setText("Cancelar");
 
-        tabelaPatrocinador.setModel(new javax.swing.table.DefaultTableModel(
+        tabelaInscrito.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
                 {null, null, null, null},
@@ -193,13 +204,13 @@ public class Janela_Novo_Patrocinio extends javax.swing.JFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
-        jScrollPane2.setViewportView(tabelaPatrocinador);
+        jScrollPane2.setViewportView(tabelaInscrito);
 
-        jLabel9.setText("Evento / Edição");
+        jLabel9.setText("Patrocinio");
 
-        jLabel10.setText("Patrocinador");
+        jLabel10.setText("Inscrito");
 
-        tabelaEvento.setModel(new javax.swing.table.DefaultTableModel(
+        tabelaPatrocinio.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
                 {null, null, null, null},
@@ -210,7 +221,9 @@ public class Janela_Novo_Patrocinio extends javax.swing.JFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
-        jScrollPane3.setViewportView(tabelaEvento);
+        jScrollPane3.setViewportView(tabelaPatrocinio);
+
+        cmb_tipo.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "hospedagem", "alimentação", "transporte", " " }));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -219,6 +232,9 @@ public class Janela_Novo_Patrocinio extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGap(20, 20, 20)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 411, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
@@ -231,21 +247,22 @@ public class Janela_Novo_Patrocinio extends javax.swing.JFrame {
                                     .addComponent(jLabel9)
                                     .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 218, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(jLabel10)
-                                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 411, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(0, 20, Short.MAX_VALUE)))
-                        .addContainerGap())
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 411, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel5)
-                                    .addComponent(jLabel7))
-                                .addGap(70, 70, 70)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(txtValor, javax.swing.GroupLayout.PREFERRED_SIZE, 295, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(txtData, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                        .addGap(0, 0, Short.MAX_VALUE))))
+                                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 411, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                .addComponent(jLabel5)
+                                                .addComponent(jLabel6))
+                                            .addGroup(layout.createSequentialGroup()
+                                                .addComponent(jLabel7)
+                                                .addGap(4, 4, 4)))
+                                        .addGap(40, 40, 40)
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(txtData, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(cmb_tipo, javax.swing.GroupLayout.PREFERRED_SIZE, 146, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(txtValor, javax.swing.GroupLayout.PREFERRED_SIZE, 295, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                .addGap(0, 52, Short.MAX_VALUE)))
+                        .addContainerGap())))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -264,17 +281,18 @@ public class Janela_Novo_Patrocinio extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5)
                     .addComponent(txtValor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(28, 28, 28)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel7)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(txtData, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 48, Short.MAX_VALUE)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(btn_salvar)
-                            .addComponent(btn_cancela))))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel6)
+                    .addComponent(cmb_tipo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtData, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel7))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 37, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btn_salvar)
+                    .addComponent(btn_cancela))
                 .addContainerGap())
         );
 
@@ -283,23 +301,26 @@ public class Janela_Novo_Patrocinio extends javax.swing.JFrame {
 
     private void btn_salvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_salvarActionPerformed
         //Obtem o indice das tabelas de evento/edição e patrocinio
-        int evIndex = tabelaEvento.getSelectedRow();
-        int patIndex = tabelaPatrocinador.getSelectedRow();
-        String numEd = "", codEv = "", cnpjPat="", data = "NULL";
+        int insIndex = tabelaInscrito.getSelectedRow();
+        int patIndex = tabelaPatrocinio.getSelectedRow();
+        String numEdApr = "", codEvApr = "", idApr = "", cnpjPat="", codEvPat="", numEdPat = "", data = "NULL";
 
-        if (evIndex == -1){
+        if (insIndex == -1){
             JOptionPane.showMessageDialog(null, "Preencher evento");
         //Se tem evento/edição selecionados:
-        }else if (patIndex == -1){
-            JOptionPane.showMessageDialog(null, "Preencher patrocinador");        
         } else {
         
-            //Obtem os campos codEv e numEd da tabela evento/edição
-            //Vale notar que 9 e 1 são os indices de coluna, definidos em SELECTS - não é o ideal
-            // mas não tive tempo de bolar um jeitpo mais prático
-            codEv = (String) tabelaEvento.getModel().getValueAt(evIndex, 9);
-            numEd = (String) tabelaEvento.getModel().getValueAt(evIndex, 1);
-            cnpjPat = (String) tabelaPatrocinador.getModel().getValueAt(patIndex, 0);
+            //Se inscrito está selecionado, obtem seus dados
+            idApr = (String) tabelaInscrito.getModel().getValueAt(patIndex, 11);
+            codEvApr = (String) tabelaInscrito.getModel().getValueAt(patIndex, 10);
+            numEdApr = (String) tabelaInscrito.getModel().getValueAt(patIndex, 7);
+            
+            //Se patrocinios está selecionado, obtem seus dados
+            if (patIndex != -1){
+                cnpjPat = (String) tabelaPatrocinio.getModel().getValueAt(patIndex, 0);
+                codEvPat = (String) tabelaPatrocinio.getModel().getValueAt(patIndex, 7);
+                numEdPat = (String) tabelaPatrocinio.getModel().getValueAt(patIndex, 3);
+            }
             
             //Verifica se a data está definida
             if (!this.txtData.getText().equals("__/__/____")){
@@ -310,8 +331,9 @@ public class Janela_Novo_Patrocinio extends javax.swing.JFrame {
            if (this.tipo.equals("insert")){
                 try {
                     // código do insert
-                     resultado = DBconnection.executeSQLSelect(conexao,"INSERT INTO patrocinio VALUES('"+cnpjPat+"', "+codEv+", "+numEd+", "+this.txtValor.getText()+", "+this.txtValor.getText()+", "+data+")");
-                     System.out.println(resultado);
+                   //  resultado = DBconnection.executeSQLSelect(conexao,"INSERT INTO despesa VALUES(SEQ_CODDESP_DESPESA.NEXTVAL," + codEv + "," + numEd + "," + cnpjPat+","+ codEvPat + "," + numEdPat + ", " + data + ","+ this.txtValor.getText()+", '"+ this.txtDescricao.getText()+"')");
+                   resultado = DBconnection.executeSQLSelect(conexao, "INSERT INTO auxilio VALUES('"+cnpjPat+"', "+codEvPat+", "+numEdPat+", "+codEvApr+", "+numEdApr+", "+idApr+", "+this.txtValor.getText()+", "+data+",'"+this.cmb_tipo.getSelectedItem().toString().toLowerCase()+"')");
+                    System.out.println(resultado);
                      
                      //Fecha a janela
                      this.setVisible(false);
@@ -326,7 +348,7 @@ public class Janela_Novo_Patrocinio extends javax.swing.JFrame {
                 //SQL DE UPDATE
                 try {
                     //Código SQL do update
-                     resultado = DBconnection.executeSQLSelect(conexao,"UPDATE patrocinio SET valorPat = "+this.txtValor.getText()+", dataPat = "+data+" WHERE codEv = "+codEv+"AND numEd = "+numEd+"AND cnpjPat = '"+cnpjPat+"'");
+                    resultado = DBconnection.executeSQLSelect(conexao, "UPDATE auxilio SET cnpjPat = '"+cnpjPat+"', codEvPat = "+codEvPat+", numEdPat = "+numEdPat+", valorAux = "+this.txtValor.getText()+", dataAux = "+data + " WHERE  codEvApr = "+codEvApr+" AND numEdApr = "+numEdApr+" AND idApr = "+idApr+" AND tipoAux = '" + tipoAux.toLowerCase()+"'");
                      System.out.println(resultado);
                      
                      //FEcha a janela
@@ -359,35 +381,37 @@ public class Janela_Novo_Patrocinio extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Janela_Novo_Patrocinio.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Janela_Novo_Auxilio.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Janela_Novo_Patrocinio.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Janela_Novo_Auxilio.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Janela_Novo_Patrocinio.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Janela_Novo_Auxilio.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Janela_Novo_Patrocinio.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Janela_Novo_Auxilio.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Janela_Novo_Patrocinio().setVisible(true);
+                new Janela_Novo_Auxilio().setVisible(true);
             }
         });
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btn_cancela;
     private javax.swing.JButton btn_salvar;
+    private javax.swing.JComboBox cmb_tipo;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
-    private javax.swing.JTable tabelaEvento;
-    private javax.swing.JTable tabelaPatrocinador;
+    private javax.swing.JTable tabelaInscrito;
+    private javax.swing.JTable tabelaPatrocinio;
     private javax.swing.JFormattedTextField txtData;
     private javax.swing.JTextField txtValor;
     // End of variables declaration//GEN-END:variables

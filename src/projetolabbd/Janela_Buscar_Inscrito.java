@@ -269,7 +269,8 @@ public class Janela_Buscar_Inscrito extends javax.swing.JFrame {
 
                 System.out.println("REMOÇÃO DO INSCRITO " + idPe + "Ed:" + codEv + " - " + numEd);
                 try {
-                    resultado = DBconnection.executeSQLSelect(conexao,"DELETE FROM inscrito WHERE idPart = " + idPe + " AND codEv = " + codEv + " AND numEd = " + numEd);
+                    //resultado = DBconnection.executeSQLSelect(conexao,"DELETE FROM inscrito WHERE idPart = " + idPe + " AND codEv = " + codEv + " AND numEd = " + numEd);
+                    resultado = DBconnection.executeSQLSelect(conexao,"CALL remove.removeInscrito("+codEv+", "+numEd+", "+idPe+")");
                     System.out.println(resultado);
                     this.btn_filtrar.doClick();
                 } catch (SQLException ex) {

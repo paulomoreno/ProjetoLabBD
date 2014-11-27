@@ -183,7 +183,8 @@ public class Janela_Buscar_Artigo extends javax.swing.JFrame {
 
                 System.out.println("REMOÇÃO DO ARTIGO " + idArt);
                 try {
-                    resultado = DBconnection.executeSQLSelect(conexao,"DELETE FROM artigo WHERE idArt = " + idArt);
+                    //resultado = DBconnection.executeSQLSelect(conexao,"DELETE FROM artigo WHERE idArt = " + idArt);
+                    resultado = DBconnection.executeSQLSelect(conexao,"CALL remove.removeArtigo("+idArt+")");
                     System.out.println(resultado);
                     this.btn_filtrar.doClick();
                 } catch (SQLException ex) {

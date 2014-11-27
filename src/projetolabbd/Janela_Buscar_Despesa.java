@@ -256,7 +256,8 @@ public class Janela_Buscar_Despesa extends javax.swing.JFrame {
 
                 System.out.println("REMOÇÃO DA DESPESA " + codDesp + " - " + codEv + " - " + numEd);
                 try {
-                    resultado = DBconnection.executeSQLSelect(conexao,"DELETE FROM despesa WHERE codDesp = " + codDesp + " AND codEv = "  + codEv + " AND numEd = " + numEd );
+                    //resultado = DBconnection.executeSQLSelect(conexao,"DELETE FROM despesa WHERE codDesp = " + codDesp + " AND codEv = "  + codEv + " AND numEd = " + numEd );
+                    resultado = DBconnection.executeSQLSelect(conexao,"CALL remove.removeDespesa("  + codEv + ", " + numEd + ", " + codDesp + ")");
                     System.out.println(resultado);
                     this.btn_filtrar.doClick();
                 } catch (SQLException ex) {

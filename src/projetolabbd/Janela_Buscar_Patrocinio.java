@@ -86,6 +86,7 @@ public class Janela_Buscar_Patrocinio extends javax.swing.JFrame {
         jLabel6 = new javax.swing.JLabel();
         txtNomeEvento = new javax.swing.JTextField();
         txtDataF = new javax.swing.JFormattedTextField(mfData);
+        btn_editar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -159,6 +160,13 @@ public class Janela_Buscar_Patrocinio extends javax.swing.JFrame {
             }
         });
 
+        btn_editar.setText("Editar Selecionado");
+        btn_editar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_editarActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -168,6 +176,8 @@ public class Janela_Buscar_Patrocinio extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(btn_editar)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btn_remover))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -225,20 +235,20 @@ public class Janela_Buscar_Patrocinio extends javax.swing.JFrame {
                     .addComponent(jLabel6))
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel4)
                             .addComponent(txtDataF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(btn_filtrar)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 300, Short.MAX_VALUE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED))
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 300, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(txtData, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
-                .addComponent(btn_remover)
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(txtData, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btn_remover)
+                    .addComponent(btn_editar))
                 .addContainerGap())
         );
 
@@ -323,7 +333,8 @@ public class Janela_Buscar_Patrocinio extends javax.swing.JFrame {
 
                 System.out.println("REMOÇÃO DO PATROCINADOR " + cnpj + " - " + razaoSocial);
                 try {
-                    resultado = DBconnection.executeSQLSelect(conexao,"DELETE FROM patrocinio WHERE cnpjPat = " + cnpj + " AND codEv = "  + codEv + " AND numEd = " + numEd );
+//                    resultado = DBconnection.executeSQLSelect(conexao,"DELETE FROM patrocinio WHERE cnpjPat = " + cnpj + " AND codEv = "  + codEv + " AND numEd = " + numEd );
+                     resultado = DBconnection.executeSQLSelect(conexao,"CALL remove.removePatrocinio("  + codEv + ", " + numEd + ", " + cnpj + ")");
                     System.out.println(resultado);
                     this.btn_filtrar.doClick();
                 } catch (SQLException ex) {
@@ -337,6 +348,21 @@ public class Janela_Buscar_Patrocinio extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btn_removerActionPerformed
 
+    private void btn_editarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_editarActionPerformed
+        int index = tabelaPatrocinio.getSelectedRow();
+        if (index != -1){
+            String codEv = (String) tabelaPatrocinio.getModel().getValueAt(index, 7);
+            String numEd = (String) tabelaPatrocinio.getModel().getValueAt(index, 3);
+            String cnpjPat = (String) tabelaPatrocinio.getModel().getValueAt(index, 0);     
+            Janela_Novo_Patrocinio updatePatrocinio = new Janela_Novo_Patrocinio(conexao, "update", codEv, numEd, cnpjPat, this);
+            updatePatrocinio.setVisible(true);
+        }
+    }//GEN-LAST:event_btn_editarActionPerformed
+
+    public void atualizaTabela(){
+        this.btn_filtrar.doClick();
+    }
+        
     /**
      * @param args the command line arguments
      */
@@ -373,6 +399,7 @@ public class Janela_Buscar_Patrocinio extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btn_editar;
     private javax.swing.JButton btn_filtrar;
     private javax.swing.JButton btn_remover;
     private javax.swing.JLabel jLabel2;

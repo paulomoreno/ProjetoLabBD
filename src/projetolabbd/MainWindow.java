@@ -445,7 +445,8 @@ public class MainWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_mn_nova_despesaActionPerformed
 
     private void mn_novo_auxilioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mn_novo_auxilioActionPerformed
-        // TODO add your handling code here:
+        Janela_Novo_Auxilio novoAuxilio = new Janela_Novo_Auxilio(conexao,"insert");
+        novoAuxilio.setVisible(true);
     }//GEN-LAST:event_mn_novo_auxilioActionPerformed
 
     /**
