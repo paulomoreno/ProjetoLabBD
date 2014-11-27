@@ -313,11 +313,11 @@ public class Janela_Novo_Edicao extends javax.swing.JFrame {
             
             //Verifica se a data está definida
             if (!this.txtDataInicio.getText().equals("__/__/____")){
-                dataIn = "TO_DATE('" + this.txtDataInicio + "','DD/MM/YYYY')";
+                dataIn = "TO_DATE('" + this.txtDataInicio.getText() + "','DD/MM/YYYY')";
             }
 
             if (!this.txtDataTermino.getText().equals("__/__/____")){
-                dataFim = "TO_DATE('" + this.txtDataTermino + "','DD/MM/YYYY')";
+                dataFim = "TO_DATE('" + this.txtDataTermino.getText() + "','DD/MM/YYYY')";
             }
             
             //Se é insert, realiza insert

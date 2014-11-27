@@ -495,7 +495,8 @@ public class Selects {
             tabelaAuxilio.removeColumn(tabelaAuxilio.getColumn("codEvApr"));
             tabelaAuxilio.removeColumn(tabelaAuxilio.getColumn("idApr"));
 
-        }    }
+        }   
+    }
     
     public static ResultSet selectFromAuxilioWithPK(Connection conexao, String codEvApr,String numEdApr,String idApr,String tipoAux) throws SQLException{
             return DBconnection.executeSQLSelect(conexao,"SELECT cnpjPat, razaoSocialPat, codEvPat, numEdPat, codEvApr, numEdApr, idApr, valorAux, dataAux, tipoAux, nomeEvApr, nomeEvPat, nomePe \n"
@@ -519,4 +520,73 @@ public class Selects {
         return -1;
     }
 
+    
+     public static void selectFromConsulta1(Connection conexao, String stmWhere, JTable tabelaConsulta) throws SQLException{
+        ResultSet resultado;
+         
+        resultado = DBconnection.executeSQLSelect(conexao,"SELECT count(*) as total FROM consulta_1 " + stmWhere);
+        if (resultado.next()){
+            int tamanho = resultado.getInt("total");
+            int i = 0;
+
+            resultado = DBconnection.executeSQLSelect(conexao,"SELECT patrocinador, edicao, descricao, total FROM consulta_1 " + stmWhere);
+
+
+            String[][] dados = new String[tamanho][4];
+            String virgula;
+
+
+            while (resultado.next()){
+                dados[i][0] = resultado.getString("patrocinador");
+                dados[i][1] = resultado.getString("edicao");
+                
+                dados[i][2] = resultado.getString("descricao");
+                dados[i][3] = resultado.getString("total");
+                
+                i++;
+            }
+
+            String [] colunas = {
+                "Patrocinador","Edição","Descrição","Total"
+            };
+
+            tabelaConsulta.setModel(new javax.swing.table.DefaultTableModel(dados,colunas));  
+
+        }   
+    }
+    
+    
+      public static void selectFromConsulta2(Connection conexao, String stmWhere, JTable tabelaConsulta) throws SQLException{
+        ResultSet resultado;
+         
+        resultado = DBconnection.executeSQLSelect(conexao,"SELECT count(*) as total FROM consulta_2 " + stmWhere);
+        if (resultado.next()){
+            int tamanho = resultado.getInt("total");
+            int i = 0;
+
+            resultado = DBconnection.executeSQLSelect(conexao,"SELECT nome, instituicao, valor FROM consulta_2 " + stmWhere);
+
+
+            String[][] dados = new String[tamanho][3];
+            String virgula;
+
+
+            while (resultado.next()){
+                dados[i][0] = resultado.getString("nome");
+                dados[i][1] = resultado.getString("instituicao");
+                
+                dados[i][2] = resultado.getString("valor");
+                
+                i++;
+            }
+
+            String [] colunas = {
+                "Nome","Instituição","Valor"
+            };
+
+            tabelaConsulta.setModel(new javax.swing.table.DefaultTableModel(dados,colunas));  
+
+        }   
+    }
+    
 }

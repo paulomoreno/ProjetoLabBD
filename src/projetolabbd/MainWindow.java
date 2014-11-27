@@ -88,6 +88,7 @@ public class MainWindow extends javax.swing.JFrame {
         mn_busca_auxilio = new javax.swing.JMenuItem();
         jMenu3 = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
+        jMenuItem2 = new javax.swing.JMenuItem();
         jMenu5 = new javax.swing.JMenu();
 
         jMenu4.setText("jMenu4");
@@ -300,13 +301,21 @@ public class MainWindow extends javax.swing.JFrame {
 
         jMenu3.setText("Consultas");
 
-        jMenuItem1.setText("jMenuItem1");
+        jMenuItem1.setText("Despesas");
         jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jMenuItem1ActionPerformed(evt);
             }
         });
         jMenu3.add(jMenuItem1);
+
+        jMenuItem2.setText("Auxílios");
+        jMenuItem2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem2ActionPerformed(evt);
+            }
+        });
+        jMenu3.add(jMenuItem2);
 
         jMenuBar1.add(jMenu3);
 
@@ -330,7 +339,8 @@ public class MainWindow extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
-        // TODO add your handling code here:
+        Janela_Buscar_Consulta1 consulta = new Janela_Buscar_Consulta1(conexao);
+        consulta.setVisible(true);
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
     private void mn_nova_pessoaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mn_nova_pessoaActionPerformed
@@ -449,6 +459,11 @@ public class MainWindow extends javax.swing.JFrame {
         novoAuxilio.setVisible(true);
     }//GEN-LAST:event_mn_novo_auxilioActionPerformed
 
+    private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
+        Janela_Buscar_Consulta2 consulta = new Janela_Buscar_Consulta2(conexao);
+        consulta.setVisible(true);
+    }//GEN-LAST:event_jMenuItem2ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -495,6 +510,7 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem14;
+    private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem6;
     private javax.swing.JMenuItem jMenuItem7;
     private javax.swing.JPanel jPanel1;
