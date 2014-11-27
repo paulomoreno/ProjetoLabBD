@@ -384,8 +384,8 @@ public class Janela_Buscar_Pessoa extends javax.swing.JFrame {
                 String numEd = (String) tabelaPessoa.getModel().getValueAt(index, 7);
                 String idOrg = (String) tabelaPessoa.getModel().getValueAt(index, 10);
                 
-                //Janela_Novo_Organiza updateOrganizador = new Janela_Novo_Organiza(conexao, "update", codEv, numEd, idOrg,this);
-                //updateOrganizador.setVisible(true);
+                Janela_Novo_Organiza updateOrganizador = new Janela_Novo_Organiza(conexao, "update", codEv, numEd, idOrg,this);
+                updateOrganizador.setVisible(true);
             }
         }else{
             int index = tabelaPessoa.getSelectedRow();

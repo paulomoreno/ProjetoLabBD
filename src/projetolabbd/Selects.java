@@ -249,7 +249,7 @@ public class Selects {
     
     public static ResultSet selectFromOrganizaWithPK(Connection conexao, String codEv, String numEd, String idOrg) throws SQLException{
             return DBconnection.executeSQLSelect(conexao,"SELECT nomePe, emailPe, instituicaoPe, telefonePe, nacionalidadePe, enderecoPe, nomeEv, cargoOrg \n" +
-"FROM busca_inscrito WHERE codEv = " + codEv + " AND numEd = " + numEd + " AND idOrg = " + idOrg);    
+"FROM busca_organiza WHERE codEv = " + codEv + " AND numEd = " + numEd + " AND idOrg = " + idOrg);    
     }    
     
     

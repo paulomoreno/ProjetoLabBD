@@ -425,8 +425,8 @@ public class MainWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_mn_nova_edicaoActionPerformed
 
     private void mn_novo_organizadorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mn_novo_organizadorActionPerformed
-        Janela_Novo_Evento novoEvento = new Janela_Novo_Evento(conexao,"insert");
-        novoEvento.setVisible(true);
+        Janela_Novo_Organiza novoOrganiza = new Janela_Novo_Organiza(conexao,"insert");
+        novoOrganiza.setVisible(true);
     }//GEN-LAST:event_mn_novo_organizadorActionPerformed
 
     private void mn_novo_patrocinadorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mn_novo_patrocinadorActionPerformed
