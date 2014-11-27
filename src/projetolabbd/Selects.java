@@ -305,6 +305,7 @@ public class Selects {
             int tamanho = resultado.getInt("total");
             int i = 0;
 
+             System.out.println("SELECT idArt, tituloArt, nomePe, idAut FROM busca_escreve " + stmWhere);
             resultado = DBconnection.executeSQLSelect(conexao,"SELECT idArt, tituloArt, nomePe, idAut FROM busca_escreve " + stmWhere);
 
             String[][] dados = new String[tamanho][4];

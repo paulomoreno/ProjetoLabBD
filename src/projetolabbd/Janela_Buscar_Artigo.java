@@ -243,7 +243,12 @@ public class Janela_Buscar_Artigo extends javax.swing.JFrame {
     }//GEN-LAST:event_btn_editar1ActionPerformed
 
     private void btn_autoresActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_autoresActionPerformed
-        // TODO add your handling code here:
+        int index = tabelaArtigo.getSelectedRow();
+        if (index != -1){
+            String idArt = (String) tabelaArtigo.getModel().getValueAt(index, 6);
+            Janela_Buscar_Autores autores = new Janela_Buscar_Autores(conexao, idArt);
+            autores.setVisible(true);
+        }
     }//GEN-LAST:event_btn_autoresActionPerformed
 
     public void atualizaTabela(){

@@ -23,7 +23,7 @@ public class Janela_Buscar_Autores extends javax.swing.JFrame {
     ResultSet resultado;
     
     private void Atualiza_Data_Model(String stmWhere) throws SQLException{
-        Selects.selectFromEdicao(conexao, stmWhere, tabelaAutores);
+        Selects.selectFromEscreve(conexao, stmWhere, tabelaAutores);
     }
 
     /**
@@ -227,11 +227,11 @@ public class Janela_Buscar_Autores extends javax.swing.JFrame {
     private void btn_filtrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_filtrarActionPerformed
         // TODO add your handling code here:
         
-        String stm="WHERE idArt = " + this.idArt + " AND ";
+        String stm="WHERE idArt = " + this.idArt;
 
         
         if (!this.txtNomeAutor.getText().equals("")) {
-            stm = stm + " nomePe LIKE '%" + txtNomeAutor.getText() + "%'"; 
+            stm = stm + " AND  nomePe LIKE '%" + txtNomeAutor.getText() + "%'"; 
         } 
         
         /*if (!this.txtNumeroEdicao.getText().equals("")) {
@@ -241,6 +241,7 @@ public class Janela_Buscar_Autores extends javax.swing.JFrame {
         }  */
                         
         try {
+            System.out.println(stm);
             this.Atualiza_Data_Model(stm);
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(null, ex.getMessage());
@@ -279,24 +280,44 @@ public class Janela_Buscar_Autores extends javax.swing.JFrame {
     }//GEN-LAST:event_btn_removerActionPerformed
 
     private void btn_addActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_addActionPerformed
-        // TODO add your handling code here:
+        //Obtem o indice das tabelas de evento/edição e patrocinio
+        int peIndex = tabelaPessoas.getSelectedRow();
+        String idAut = "";
+
+        if (peIndex == -1){
+            JOptionPane.showMessageDialog(null, "Selecionar pessoa");
+        //Se tem evento/edição selecionados:
+        } else {
+        
+            //Obtem os campos codEv e numEd da tabela evento/edição
+            //Vale notar que 9 e 1 são os indices de coluna, definidos em SELECTS - não é o ideal
+            // mas não tive tempo de bolar um jeitpo mais prático
+            idAut = (String) tabelaPessoas.getModel().getValueAt(peIndex, 7);
+
+            try {
+                // código do insert
+                 resultado = DBconnection.executeSQLSelect(conexao,"INSERT INTO escreve VALUES("+idAut+","+idArt+")");
+                 System.out.println(resultado);
+
+                 //Fecha a janela
+                 this.btn_filtrar.doClick();
+             } catch (SQLException ex) {
+                 JOptionPane.showMessageDialog(null, ex.getMessage());
+                 Logger.getLogger(Janela_Buscar_Evento.class.getName()).log(Level.SEVERE, null, ex);
+             }
+        }
+
     }//GEN-LAST:event_btn_addActionPerformed
 
     private void btn_filtrarPessoaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_filtrarPessoaActionPerformed
        String stm = "";
        
         if (!this.txtNomePessoa.getText().equals("")) {
-            stm = "WHERE nomePe LIKE '%" + txtNomeAutor.getText() + "%'"; 
+            stm = "WHERE nomePe LIKE '%" + txtNomePessoa.getText() + "%'"; 
         } 
-        
-        /*if (!this.txtNumeroEdicao.getText().equals("")) {
-            stm = stm + where + and + " LIKE '%" + txtNumeroEdicao.getText() + "%'"; 
-            where = "";
-            and = "AND";
-        }  */
                         
         try {
-            this.Atualiza_Data_Model(stm);
+            Selects.selectFromPessoa(conexao, stm, tabelaPessoas);
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(null, ex.getMessage());
             Logger.getLogger(Janela_Buscar_Autores.class.getName()).log(Level.SEVERE, null, ex);
