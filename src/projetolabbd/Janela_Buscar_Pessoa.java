@@ -82,6 +82,7 @@ public class Janela_Buscar_Pessoa extends javax.swing.JFrame {
         chk_organizador = new javax.swing.JCheckBox();
         jLabel5 = new javax.swing.JLabel();
         btn_remover = new javax.swing.JButton();
+        btn_editar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -157,6 +158,13 @@ public class Janela_Buscar_Pessoa extends javax.swing.JFrame {
             }
         });
 
+        btn_editar.setText("Editar Selecionado");
+        btn_editar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_editarActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -195,6 +203,8 @@ public class Janela_Buscar_Pessoa extends javax.swing.JFrame {
                         .addGap(0, 132, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(btn_editar)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btn_remover)))
                 .addContainerGap())
         );
@@ -229,7 +239,9 @@ public class Janela_Buscar_Pessoa extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 7, Short.MAX_VALUE)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 281, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btn_remover)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btn_remover)
+                    .addComponent(btn_editar))
                 .addContainerGap())
         );
 
@@ -329,6 +341,19 @@ public class Janela_Buscar_Pessoa extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btn_removerActionPerformed
 
+    private void btn_editarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_editarActionPerformed
+        int index = tabelaPessoa.getSelectedRow();
+        if (index != -1){     
+            String idPe = (String) tabelaPessoa.getModel().getValueAt(index, 7);
+            Janela_Novo_Pessoa updatePessoa = new Janela_Novo_Pessoa(conexao, "update", idPe, this);
+            updatePessoa.setVisible(true);
+        }
+    }//GEN-LAST:event_btn_editarActionPerformed
+
+    public void atualizaTabela(){
+        this.btn_filtrar.doClick();
+    }
+    
     /**
      * @param args the command line arguments
      */
@@ -365,6 +390,7 @@ public class Janela_Buscar_Pessoa extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btn_editar;
     private javax.swing.JButton btn_filtrar;
     private javax.swing.JButton btn_remover;
     private javax.swing.JCheckBox chk_autor;

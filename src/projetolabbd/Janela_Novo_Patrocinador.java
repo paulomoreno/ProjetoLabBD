@@ -6,6 +6,10 @@ package projetolabbd;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -16,10 +20,29 @@ public class Janela_Novo_Patrocinador extends javax.swing.JFrame {
     String cnpj;
     Connection conexao;
     ResultSet resultado;
+    Janela_Buscar_Patrocinador janela;
 
-    public Janela_Novo_Patrocinador(Connection conexao, String tipo, String cnpj) {
+    public Janela_Novo_Patrocinador(Connection conexao, String tipo, String cnpj, Janela_Buscar_Patrocinador janela) {
         this(conexao, tipo);
-        this.cnpj = cnpj;
+        
+        //código para inserção
+        try {
+            this.cnpj = cnpj;
+            this.janela = janela;
+            
+            resultado = Selects.selectFromPatrocinadorWithPK(conexao, cnpj);
+            
+            if (resultado.next()){                               
+                this.txtCNPJ.setText(resultado.getString("cnpjPat"));
+                this.txtRazaoSocial.setText(resultado.getString("razaoSocialPat"));
+                this.txtTelefone.setText(resultado.getString("telefonePat"));
+                this.txtEndereco.setText(resultado.getString("enderecoPat"));                                                       
+            }
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null, ex.getMessage());
+            Logger.getLogger(Janela_Novo_Patrocinador.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
     }
 
 
@@ -38,6 +61,7 @@ public class Janela_Novo_Patrocinador extends javax.swing.JFrame {
                 this.btn_cancela.setVisible(false);
             } else if (tipo.equals("update")){
                 this.btn_cancela.setVisible(true);            
+                this.txtCNPJ.setEnabled(false);
             }
             
         } else{
@@ -67,10 +91,10 @@ public class Janela_Novo_Patrocinador extends javax.swing.JFrame {
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
-        jTextField2 = new javax.swing.JTextField();
-        jTextField3 = new javax.swing.JTextField();
-        jTextField4 = new javax.swing.JTextField();
+        txtEndereco = new javax.swing.JTextField();
+        txtTelefone = new javax.swing.JTextField();
+        txtRazaoSocial = new javax.swing.JTextField();
+        txtCNPJ = new javax.swing.JTextField();
         btn_salvar = new javax.swing.JButton();
         btn_cancela = new javax.swing.JButton();
 
@@ -87,9 +111,25 @@ public class Janela_Novo_Patrocinador extends javax.swing.JFrame {
 
         jLabel5.setText("Endereço");
 
+        txtCNPJ.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtCNPJActionPerformed(evt);
+            }
+        });
+
         btn_salvar.setText("Salvar");
+        btn_salvar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_salvarActionPerformed(evt);
+            }
+        });
 
         btn_cancela.setText("Cancelar");
+        btn_cancela.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_cancelaActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -108,10 +148,10 @@ public class Janela_Novo_Patrocinador extends javax.swing.JFrame {
                                     .addComponent(jLabel5))
                                 .addGap(119, 119, 119)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                    .addComponent(txtEndereco, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(txtTelefone, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(txtRazaoSocial, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(txtCNPJ, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)))
                             .addGroup(layout.createSequentialGroup()
                                 .addGap(20, 20, 20)
                                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 218, javax.swing.GroupLayout.PREFERRED_SIZE)))
@@ -135,19 +175,19 @@ public class Janela_Novo_Patrocinador extends javax.swing.JFrame {
                 .addGap(48, 48, 48)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
-                    .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtCNPJ, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
-                    .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtRazaoSocial, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
-                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtTelefone, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtEndereco, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 74, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btn_salvar)
@@ -157,6 +197,46 @@ public class Janela_Novo_Patrocinador extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void btn_salvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_salvarActionPerformed
+        if (this.tipo.equals("insert")){
+        try {                
+            System.out.println("INSERT INTO patrocinador VALUES('" + this.txtCNPJ.getText() + "', '"+ this.txtRazaoSocial.getText()+"', '"+ this.txtTelefone.getText()+"', '"+ this.txtEndereco.getText()+"')");
+            resultado = DBconnection.executeSQLSelect(conexao,"INSERT INTO patrocinador VALUES('" + this.txtCNPJ.getText() + "', '"+ this.txtRazaoSocial.getText()+"', '"+ this.txtTelefone.getText()+"', '"+ this.txtEndereco.getText()+"')");
+            System.out.println(resultado);
+            this.setVisible(false);
+            this.dispose();
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null, ex.getMessage());
+            Logger.getLogger(Janela_Buscar_Patrocinador.class.getName()).log(Level.SEVERE, null, ex);
+        }
+                        
+        }else if (this.tipo.equals("update")){
+            //
+            System.out.println("UPDATE DO PATROCINADOR DE CNPJ " + cnpj);
+            try {
+                System.out.println("UPDATE patrocinador SET razaoSocialPat = '" + this.txtRazaoSocial.getText() + "' , telefonePat =  '" + this.txtTelefone.getText() + "' , enderecoPat = '" + this.txtEndereco.getText() + "' WHERE cnpjPat = '" + cnpj + "'");
+
+                 resultado = DBconnection.executeSQLSelect(conexao,"UPDATE patrocinador SET razaoSocialPat = '" + this.txtRazaoSocial.getText() + "' , telefonePat =  '" + this.txtTelefone.getText() + "' , enderecoPat = '" + this.txtEndereco.getText() + "' WHERE cnpjPat = '" + cnpj + "'");
+                 System.out.println(resultado);
+                 this.janela.atualizaTabela();
+                 this.setVisible(false);
+                 this.dispose();
+             } catch (SQLException ex) {
+                 JOptionPane.showMessageDialog(null, ex.getMessage());
+                 Logger.getLogger(Janela_Buscar_Patrocinador.class.getName()).log(Level.SEVERE, null, ex);
+             }
+        }                        
+    }//GEN-LAST:event_btn_salvarActionPerformed
+
+    private void btn_cancelaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_cancelaActionPerformed
+        this.setVisible(false);
+        this.dispose();
+    }//GEN-LAST:event_btn_cancelaActionPerformed
+
+    private void txtCNPJActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtCNPJActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtCNPJActionPerformed
 
     /**
      * @param args the command line arguments
@@ -200,9 +280,9 @@ public class Janela_Novo_Patrocinador extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
-    private javax.swing.JTextField jTextField3;
-    private javax.swing.JTextField jTextField4;
+    private javax.swing.JTextField txtCNPJ;
+    private javax.swing.JTextField txtEndereco;
+    private javax.swing.JTextField txtRazaoSocial;
+    private javax.swing.JTextField txtTelefone;
     // End of variables declaration//GEN-END:variables
 }

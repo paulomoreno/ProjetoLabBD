@@ -58,6 +58,7 @@ public class Janela_Buscar_Patrocinador extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        btn_remover1 = new javax.swing.JButton();
         txtCNPJ = new javax.swing.JTextField();
         lbl_titulo = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
@@ -68,6 +69,14 @@ public class Janela_Buscar_Patrocinador extends javax.swing.JFrame {
         btn_filtrar = new javax.swing.JButton();
         jCheckBox4 = new javax.swing.JCheckBox();
         btn_remover = new javax.swing.JButton();
+        btn_editar = new javax.swing.JButton();
+
+        btn_remover1.setText("Remover Selecionado");
+        btn_remover1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_remover1ActionPerformed(evt);
+            }
+        });
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -119,6 +128,13 @@ public class Janela_Buscar_Patrocinador extends javax.swing.JFrame {
             }
         });
 
+        btn_editar.setText("Editar Selecionado");
+        btn_editar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_editarActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -148,6 +164,8 @@ public class Janela_Buscar_Patrocinador extends javax.swing.JFrame {
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(btn_editar)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btn_remover)))
                 .addContainerGap())
         );
@@ -172,7 +190,9 @@ public class Janela_Buscar_Patrocinador extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 305, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btn_remover)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btn_remover)
+                    .addComponent(btn_editar))
                 .addContainerGap())
         );
 
@@ -235,7 +255,26 @@ public class Janela_Buscar_Patrocinador extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btn_removerActionPerformed
 
+    private void btn_remover1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_remover1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btn_remover1ActionPerformed
+
+    private void btn_editarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_editarActionPerformed
+        int index = tabelaPatrocinador.getSelectedRow();
+        if (index != -1){     
+            String cnpj = (String) tabelaPatrocinador.getModel().getValueAt(index, 0);
+            Janela_Novo_Patrocinador updatePatrocinador = new Janela_Novo_Patrocinador(conexao, "update", cnpj, this);
+            updatePatrocinador.setVisible(true);
+        }
+    }//GEN-LAST:event_btn_editarActionPerformed
+
+    
+    public void atualizaTabela(){
+        this.btn_filtrar.doClick();
+    }
+    
     /**
+     * 
      * @param args the command line arguments
      */
     public static void main(String args[]) {
@@ -271,8 +310,10 @@ public class Janela_Buscar_Patrocinador extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btn_editar;
     private javax.swing.JButton btn_filtrar;
     private javax.swing.JButton btn_remover;
+    private javax.swing.JButton btn_remover1;
     private javax.swing.JCheckBox jCheckBox4;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
