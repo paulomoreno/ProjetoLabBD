@@ -311,9 +311,9 @@ public class Janela_Novo_Auxilio extends javax.swing.JFrame {
         } else {
         
             //Se inscrito está selecionado, obtem seus dados
-            idApr = (String) tabelaInscrito.getModel().getValueAt(patIndex, 11);
-            codEvApr = (String) tabelaInscrito.getModel().getValueAt(patIndex, 10);
-            numEdApr = (String) tabelaInscrito.getModel().getValueAt(patIndex, 7);
+            idApr = (String) tabelaInscrito.getModel().getValueAt(insIndex, 11);
+            codEvApr = (String) tabelaInscrito.getModel().getValueAt(insIndex, 10);
+            numEdApr = (String) tabelaInscrito.getModel().getValueAt(insIndex, 7);
             
             //Se patrocinios está selecionado, obtem seus dados
             if (patIndex != -1){

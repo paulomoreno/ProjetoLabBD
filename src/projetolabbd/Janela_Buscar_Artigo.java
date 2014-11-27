@@ -64,6 +64,7 @@ public class Janela_Buscar_Artigo extends javax.swing.JFrame {
         tabelaArtigo = new javax.swing.JTable();
         btn_filtrar = new javax.swing.JButton();
         btn_Remover = new javax.swing.JButton();
+        btn_editar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -105,6 +106,13 @@ public class Janela_Buscar_Artigo extends javax.swing.JFrame {
             }
         });
 
+        btn_editar.setText("Editar Selecionado");
+        btn_editar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_editarActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -126,6 +134,8 @@ public class Janela_Buscar_Artigo extends javax.swing.JFrame {
                         .addGap(0, 366, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(btn_editar)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btn_Remover)))
                 .addContainerGap())
         );
@@ -143,7 +153,9 @@ public class Janela_Buscar_Artigo extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 305, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btn_Remover))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btn_Remover)
+                    .addComponent(btn_editar)))
         );
 
         pack();
@@ -199,6 +211,18 @@ public class Janela_Buscar_Artigo extends javax.swing.JFrame {
         
     }//GEN-LAST:event_btn_RemoverActionPerformed
 
+    private void btn_editarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_editarActionPerformed
+        int index = tabelaArtigo.getSelectedRow();
+        if (index != -1){
+            String idArt = (String) tabelaArtigo.getModel().getValueAt(index, 6);
+            Janela_Novo_Artigo updateArtigo = new Janela_Novo_Artigo(conexao, "update", idArt, this);
+            updateArtigo.setVisible(true);
+        }    }//GEN-LAST:event_btn_editarActionPerformed
+
+    public void atualizaTabela(){
+        this.btn_filtrar.doClick();
+    }
+    
     /**
      * @param args the command line arguments
      */
@@ -236,6 +260,7 @@ public class Janela_Buscar_Artigo extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btn_Remover;
+    private javax.swing.JButton btn_editar;
     private javax.swing.JButton btn_filtrar;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;

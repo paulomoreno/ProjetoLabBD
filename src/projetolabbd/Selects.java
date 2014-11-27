@@ -145,7 +145,7 @@ public class Selects {
         }    }
     
     public static ResultSet selectFromPessoaWithPK(Connection conexao, String idPe) throws SQLException{
-        return DBconnection.executeSQLSelect(conexao,"SELECT idPe, nomePe, emailPe, instituicaoPe, telefonePe, nacionalidadePe, enderecoPe, tipoOrganizador, tipoParticipante, tipoAutor FROM pessoa " + idPe);
+        return DBconnection.executeSQLSelect(conexao,"SELECT idPe, nomePe, emailPe, instituicaoPe, telefonePe, nacionalidadePe, enderecoPe, tipoOrganizador, tipoParticipante, tipoAutor FROM pessoa WHERE idPe = " + idPe);
     }
     
     public static void selectFromInscrito(Connection conexao, String stmWhere, JTable tabelaInscrito) throws SQLException{
@@ -237,7 +237,7 @@ public class Selects {
     }
     
     public static ResultSet selectFromArtigoWithPK(Connection conexao, String idArt) throws SQLException{
-            return DBconnection.executeSQLSelect(conexao,"SELECT idArt, tituloArt, dataApresArt, horaApresArt, nomeEv, numEd, nomePe FROM busca_artigo WHERE idArt = " + idArt);
+            return DBconnection.executeSQLSelect(conexao,"SELECT idArt, tituloArt, dataApresArt, horaApresArt, nomeEv, numEd, nomePe, codEv, idApr FROM busca_artigo WHERE idArt = " + idArt);
     }    
 
     public static void selectFromPatrocinador(Connection conexao, String stmWhere, JTable tabelaPatrocinador) throws SQLException{

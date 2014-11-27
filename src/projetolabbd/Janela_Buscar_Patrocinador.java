@@ -267,7 +267,6 @@ public class Janela_Buscar_Patrocinador extends javax.swing.JFrame {
             updatePatrocinador.setVisible(true);
         }
     }//GEN-LAST:event_btn_editarActionPerformed
-
     
     public void atualizaTabela(){
         this.btn_filtrar.doClick();
